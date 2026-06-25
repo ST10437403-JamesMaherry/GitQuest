@@ -1,0 +1,10 @@
+{
+    "name": "Jameson",
+    "level": 2,
+    "xp": 75,
+    "completed_missions": [
+        1,
+        2,
+        3
+    ]
+}
