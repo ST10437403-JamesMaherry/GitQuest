@@ -1,6 +1,7 @@
 from game.player import Player
 from game.missions import MISSIONS
 from game.save_system import save_player, load_player
+from game.answer_checker import is_correct_answer
 
 
 class GameEngine:
@@ -71,6 +72,15 @@ class GameEngine:
         print("\nYou have completed all available missions!")
 
     def play_mission(self, mission):
+        """
+        Runs a single mission.
+
+        This method:
+        - Shows the mission title and story
+        - Asks the player a Git command question
+        - Checks the answer using our flexible answer checker
+        - Rewards the player if they are correct
+        """
         print("\n" + "=" * 50)
         print(f"MISSION {mission['id']}: {mission['title']}")
         print("=" * 50)
@@ -79,7 +89,7 @@ class GameEngine:
 
         answer = input(mission["question"] + "\n> ").strip()
 
-        if answer == mission["answer"]:
+        if is_correct_answer(answer, mission):
             print("\nCorrect!")
             print(f"Command unlocked: {mission['command_unlocked']}")
 
@@ -88,7 +98,7 @@ class GameEngine:
             save_player(self.player)
         else:
             print("\nNot quite.")
-            print(f"Hint: The correct command is related to: {mission['command_unlocked']}")
+            print(f"Hint: {mission['hint']}")
 
     def show_stats(self):
         print("\n" + "=" * 30)
