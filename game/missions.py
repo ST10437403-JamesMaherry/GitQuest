@@ -4,35 +4,89 @@ MISSIONS = [
         "title": "The Empty Repository",
         "story": "You find an empty project folder. To begin your journey, you must turn it into a Git repository.",
         "question": "Which Git command initializes a new repository?",
-        "answer": "git init",
+        "accepted_answers": [
+            "git init"
+        ],
+        "accepted_patterns": [],
         "xp": 50,
-        "command_unlocked": "git init"
+        "command_unlocked": "git init",
+        "hint": "This command creates a new Git repository in the current folder."
     },
     {
         "id": 2,
         "title": "The Watchful Eye",
         "story": "You need to inspect the current state of your repository before making changes.",
         "question": "Which Git command shows the status of your working directory?",
-        "answer": "git status",
+        "accepted_answers": [
+            "git status"
+        ],
+        "accepted_patterns": [],
         "xp": 50,
-        "command_unlocked": "git status"
+        "command_unlocked": "git status",
+        "hint": "This command shows staged files, unstaged files, and untracked files."
     },
     {
         "id": 3,
         "title": "Preparing the Scroll",
         "story": "You changed a file and now need to stage it before committing.",
         "question": "Which Git command stages all changed files?",
-        "answer": "git add .",
+        "accepted_answers": [
+            "git add .",
+            "git add --all",
+            "git add -A"
+        ],
+        "accepted_patterns": [],
         "xp": 75,
-        "command_unlocked": "git add ."
+        "command_unlocked": "git add .",
+        "hint": "This command moves file changes into the staging area."
     },
     {
         "id": 4,
         "title": "Sealing History",
         "story": "Your staged changes are ready to be saved into Git history.",
         "question": "Which Git command creates a commit with a message?",
-        "answer": "git commit -m",
+        "accepted_answers": [
+            "git commit -m"
+        ],
+        "accepted_patterns": [
+            r"git\s+commit\s+-m\s+\".+\"",
+            r"git\s+commit\s+-m\s+'.+'",
+            r"git\s+commit\s+-am\s+\".+\"",
+            r"git\s+commit\s+-am\s+'.+'"
+        ],
         "xp": 75,
-        "command_unlocked": "git commit -m"
+        "command_unlocked": "git commit -m",
+        "hint": "Use git commit with the -m option followed by a message in quotes."
+    },
+    {
+        "id": 5,
+        "title": "Reading the Timeline",
+        "story": "The kingdom's history is written in commits. You need to inspect the commit timeline.",
+        "question": "Which Git command shows the commit history?",
+        "accepted_answers": [
+            "git log",
+            "git log --oneline"
+        ],
+        "accepted_patterns": [],
+        "xp": 75,
+        "command_unlocked": "git log",
+        "hint": "This command displays previous commits."
+    },
+    {
+        "id": 6,
+        "title": "Creating a New Path",
+        "story": "A new feature must be developed safely without changing the main timeline.",
+        "question": "Which Git command creates and switches to a new branch?",
+        "accepted_answers": [
+            "git switch -c feature/new-feature",
+            "git checkout -b feature/new-feature"
+        ],
+        "accepted_patterns": [
+            r"git\s+switch\s+-c\s+[\w\-/]+",
+            r"git\s+checkout\s+-b\s+[\w\-/]+"
+        ],
+        "xp": 100,
+        "command_unlocked": "git switch -c",
+        "hint": "Use git switch with the -c option to create and move to a new branch."
     }
 ]
