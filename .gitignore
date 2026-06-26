@@ -1,0 +1,32 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code settings
+.vscode/
+
+# macOS system files
+.DS_Store
+
+# Environment variables / secrets
+.env
+
+# Test and coverage output
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build / packaging files
+build/
+dist/
+*.egg-info/
+
+# Local game progress
+# Keep this ignored if you do not want your personal save data pushed to GitHub.
+data/progress.json
