@@ -1,6 +1,7 @@
 MISSIONS = [
     {
         "id": 1,
+        "area": "git_basics",
         "title": "The Empty Repository",
         "story": "You find an empty project folder. To begin your journey, you must turn it into a Git repository.",
         "question": "Which Git command initializes a new repository?",
@@ -14,6 +15,7 @@ MISSIONS = [
     },
     {
         "id": 2,
+        "area": "git_basics",
         "title": "The Watchful Eye",
         "story": "You need to inspect the current state of your repository before making changes.",
         "question": "Which Git command shows the status of your working directory?",
@@ -27,6 +29,7 @@ MISSIONS = [
     },
     {
         "id": 3,
+        "area": "git_basics",
         "title": "Preparing the Scroll",
         "story": "You changed a file and now need to stage it before committing.",
         "question": "Which Git command stages all changed files?",
@@ -42,6 +45,7 @@ MISSIONS = [
     },
     {
         "id": 4,
+        "area": "git_basics",
         "title": "Sealing History",
         "story": "Your staged changes are ready to be saved into Git history.",
         "question": "Which Git command creates a commit with a message?",
@@ -60,6 +64,7 @@ MISSIONS = [
     },
     {
         "id": 5,
+        "area": "git_basics",
         "title": "Reading the Timeline",
         "story": "The kingdom's history is written in commits. You need to inspect the commit timeline.",
         "question": "Which Git command shows the commit history?",
@@ -74,6 +79,7 @@ MISSIONS = [
     },
     {
         "id": 6,
+        "area": "branching_forest",
         "title": "Creating a New Path",
         "story": "A new feature must be developed safely without changing the main timeline.",
         "question": "Which Git command creates and switches to a new branch?",
@@ -88,5 +94,37 @@ MISSIONS = [
         "xp": 100,
         "command_unlocked": "git switch -c",
         "hint": "Use git switch with the -c option to create and move to a new branch."
+    },
+    {
+        "id": 7,
+        "area": "branching_forest",
+        "title": "Checking Your Path",
+        "story": "You need to see which branch you are currently standing on.",
+        "question": "Which Git command lists your local branches?",
+        "accepted_answers": [
+            "git branch"
+        ],
+        "accepted_patterns": [],
+        "xp": 75,
+        "command_unlocked": "git branch",
+        "hint": "This command shows all local branches and marks the current one with an asterisk."
+    },
+    {
+        "id": 8,
+        "area": "branching_forest",
+        "title": "Changing Trails",
+        "story": "You need to move from your current branch to another existing branch.",
+        "question": "Which Git command switches to an existing branch called feature/login?",
+        "accepted_answers": [
+            "git switch feature/login",
+            "git checkout feature/login"
+        ],
+        "accepted_patterns": [
+            r"git\s+switch\s+[\w\-/]+",
+            r"git\s+checkout\s+[\w\-/]+"
+        ],
+        "xp": 100,
+        "command_unlocked": "git switch",
+        "hint": "Use git switch followed by the branch name."
     }
 ]
