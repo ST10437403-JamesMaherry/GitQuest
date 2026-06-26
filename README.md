@@ -1,126 +1,47 @@
 # GitQuest: The Version Control Adventure
 
-**GitQuest** is a terminal-based Python learning game designed to help developers master Git commands in a fun, interactive, and story-driven way.
+**GitQuest** is a terminal-based Python game that helps developers learn Git commands in a fun and interactive way.
 
-Instead of memorizing Git commands from a cheat sheet, players progress through missions, unlock commands, earn XP, level up, and eventually complete real Git challenges inside sandbox repositories.
+Players complete missions, unlock Git commands, earn XP, level up, and move through different learning areas such as Git Basics and Branching Forest.
 
 This project is being built as both a learning tool and a portfolio project.
 
 ---
 
-## Project Vision
-
-Git is one of the most important tools for developers, but it can feel confusing when learned only through documentation or tutorials.
-
-GitQuest turns Git practice into a game.
-
-The player enters a fictional developer world where broken repositories, corrupted timelines, branching paths, and merge conflicts become part of the story. To progress, the player must learn and use real Git commands.
-
-Future learning paths may include SQL, Docker, APIs, and backend development concepts.
-
----
-
 ## Current Features
 
-The current version includes:
-
 * Terminal-based gameplay
+* Rich terminal UI with styled menus, panels, and tables
 * Player name creation
 * XP and leveling system
-* Mission-based Git command challenges
-* Save and load progress using JSON
+* Mission map with different learning areas
+* Git command missions
+* Flexible answer checking for realistic Git commands
 * Unlockable Git commands
-* Simple interactive menu system
+* Local JSON save system
 
 ---
 
 ## Planned Features
 
-GitQuest is still in early development. Planned improvements include:
+Future improvements include:
 
-### Better Input Checking
-
-The game will accept more realistic command answers.
-
-For example, instead of only accepting:
-
-```bash
-git commit -m
-```
-
-It should also accept answers like:
-
-```bash
-git commit -m "Add first mission"
-git commit -m 'Create player system'
-```
+* Real Git sandbox challenges
+* Merge conflict missions
+* Remote repository and GitHub missions
+* More mission areas
+* Progress bars and improved UI polish
+* SQL learning path using SQLite
 
 ---
 
-### Mission Map
+## Tech Stack
 
-Instead of only playing the next mission in order, players will eventually choose areas from a mission map, such as:
-
-* Git Basics
-* Branching Forest
-* Merge Conflict Dungeon
-* Remote Repository Citadel
-* Time Travel Tower
-* Stash Cave
-
----
-
-### Rich Terminal Styling
-
-The game will use the Python `rich` library to create a more polished terminal experience, including:
-
-* Styled text
-* Panels
-* Tables
-* Progress bars
-* Better menus
-* Color-coded feedback
-
----
-
-### Real Git Sandbox Challenges
-
-Future versions will include real Git practice missions.
-
-The game may create temporary sandbox folders where players must run actual Git commands to complete objectives.
-
-Example:
-
-```bash
-git init
-git status
-git add .
-git commit -m "Complete mission"
-```
-
-The game can then check whether the repository is in the correct state.
-
----
-
-### SQL Learning Path
-
-GitQuest may eventually expand into a broader developer learning game.
-
-A future SQL path could use SQLite to teach concepts like:
-
-```sql
-SELECT
-WHERE
-ORDER BY
-JOIN
-GROUP BY
-INSERT
-UPDATE
-DELETE
-CREATE TABLE
-```
-
-This would allow players to practice real SQL queries inside the game.
+* Python
+* Rich terminal UI
+* JSON for local save data
+* Git and GitHub
+* VS Code
 
 ---
 
@@ -132,17 +53,23 @@ gitquest/
 ├── main.py
 ├── README.md
 ├── requirements.txt
+├── .gitignore
 │
 ├── game/
 │   ├── __init__.py
-│   ├── player.py
-│   ├── missions.py
+│   ├── answer_checker.py
 │   ├── engine.py
-│   └── save_system.py
+│   ├── mission_map.py
+│   ├── missions.py
+│   ├── player.py
+│   ├── save_system.py
+│   └── ui.py
 │
 └── data/
     └── progress.json
 ```
+
+Note: `data/progress.json` is used for local save data and is ignored by Git.
 
 ---
 
@@ -157,16 +84,56 @@ cd GitQuest
 
 ---
 
-### 2. Run the Game
+### 2. Create a Virtual Environment
+
+On macOS/Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+On Windows:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+When the virtual environment is active, your terminal should show something like:
+
+```text
+(.venv)
+```
+
+---
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 4. Run the Game
+
+On macOS/Linux:
 
 ```bash
 python main.py
 ```
 
-Depending on your system, you may need:
+If that does not work, use:
 
 ```bash
 python3 main.py
+```
+
+On Windows:
+
+```bash
+python main.py
 ```
 
 ---
@@ -178,178 +145,108 @@ When the game starts, enter your developer name.
 You can then choose from the main menu:
 
 ```text
-1. Start next mission
+1. Open mission map
 2. View player stats
 3. View learned commands
 4. Save and exit
 ```
 
-Each mission teaches a Git command through a short story challenge.
+The mission map contains different learning areas.
 
-Example:
+Current areas include:
 
-```text
-MISSION 1: The Empty Repository
+* Git Basics
+* Branching Forest
+* Merge Conflict Dungeon
+* Remote Repository Citadel
 
-You find an empty project folder. To begin your journey, you must turn it into a Git repository.
-
-Which Git command initializes a new repository?
-> git init
-```
-
-Correct answers reward XP and unlock commands.
+Some areas may be locked until the player reaches a higher level.
 
 ---
 
-## Example Git Commands Covered
+## Example Commands Covered
 
-GitQuest will teach commands such as:
+GitQuest teaches commands such as:
 
 ```bash
 git init
 git status
 git add .
+git add --all
 git commit -m "message"
 git log
 git branch
-git switch
-git checkout
-git merge
-git stash
-git reset
-git revert
-git remote
-git push
-git pull
+git switch -c feature/new-feature
+git switch feature/login
+git checkout -b feature/new-feature
 ```
 
----
-
-## Learning Goals
-
-By building and playing GitQuest, the goal is to become comfortable with:
-
-* Using Git from the terminal
-* Understanding Git workflow basics
-* Staging and committing changes
-* Reading repository status
-* Creating and switching branches
-* Merging branches
-* Resolving conflicts
-* Working with remote repositories
-* Building a structured Python project
-* Saving and loading data with JSON
-* Eventually working with SQLite and SQL
+More commands will be added as the game grows.
 
 ---
 
-## Tech Stack
+## Virtual Environment Notes
 
-Current stack:
+This project uses a Python virtual environment called `.venv`.
 
-* Python
-* JSON for save data
-* Git and GitHub
-* VS Code
+The `.venv` folder is not pushed to GitHub because it is local to each computer.
 
-Planned additions:
+To activate it on macOS/Linux:
 
-* Rich for terminal UI
-* SQLite for SQL missions and save data
-* Real Git sandbox validation
-* Possible web dashboard in the future
+```bash
+source .venv/bin/activate
+```
 
----
+To deactivate it:
 
-## Why This Project?
+```bash
+deactivate
+```
 
-This project is designed to be more than a simple quiz app.
-
-GitQuest is a practical learning game that combines:
-
-* Developer education
-* Game mechanics
-* Terminal practice
-* Python programming
-* Portfolio-ready project structure
-
-It is also being built using Git from the start, which means the development process itself reinforces the skills the game is teaching.
+You do not need to deactivate it every time, but it is good practice when you are finished working on the project.
 
 ---
 
 ## Development Roadmap
 
-### Phase 1: First Playable Prototype
+### Completed
 
-* [x] Create project structure
-* [x] Add terminal game loop
+* [x] Create first playable prototype
 * [x] Add player system
 * [x] Add XP and levels
-* [x] Add basic Git missions
 * [x] Add JSON save system
+* [x] Add flexible answer checking
+* [x] Add mission map
+* [x] Add Rich terminal UI
+* [x] Add `.gitignore`
 
-### Phase 2: Improve Gameplay
+### Planned
 
-* [ ] Improve answer validation
-* [ ] Add command aliases and flexible accepted answers
-* [ ] Add mission categories
-* [ ] Add mission map
-* [ ] Add more Git basics missions
-
-### Phase 3: Improve Presentation
-
-* [ ] Add Rich terminal styling
-* [ ] Add styled menus
-* [ ] Add ASCII art
-* [ ] Add progress bars
-* [ ] Improve feedback messages
-
-### Phase 4: Real Git Practice
-
-* [ ] Create sandbox repositories
-* [ ] Check real Git command results
-* [ ] Add branch challenges
-* [ ] Add merge conflict challenges
-* [ ] Add remote repository simulations
-
-### Phase 5: SQL Expansion
-
-* [ ] Add SQLite database
-* [ ] Add SQL learning path
-* [ ] Add SQL missions
-* [ ] Add query validation
-* [ ] Add database-themed story area
+* [ ] Add real Git sandbox challenges
+* [ ] Add merge conflict missions
+* [ ] Add remote repository missions
+* [ ] Add SQLite-based SQL learning path
+* [ ] Add more UI polish
+* [ ] Add tests
 
 ---
 
 ## Portfolio Goals
 
-This project aims to demonstrate:
+This project demonstrates:
 
 * Python fundamentals
-* Clean project organization
-* File handling
-* JSON data persistence
+* Clean project structure
 * Terminal application design
 * Git and GitHub workflow
-* Future SQL integration
-* Creative problem solving
-* Ability to build a project iteratively
-
----
-
-## Contributing
-
-This is currently a personal learning project, but suggestions and ideas are welcome.
-
----
-
-## License
-
-This project is open source. A license may be added later.
+* JSON file handling
+* Virtual environment usage
+* Dependency management with `requirements.txt`
+* User interface improvements with Rich
+* Iterative feature development using branches and pull requests
 
 ---
 
 ## Author
 
-Built by James Maherry as a Python portfolio project and Git learning tool.
+Built by **James Maherry** as a Python portfolio project and Git learning tool.
