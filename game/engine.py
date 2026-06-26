@@ -2,6 +2,12 @@ from game.player import Player
 from game.missions import MISSIONS
 from game.save_system import save_player, load_player
 from game.answer_checker import is_correct_answer
+from game.mission_map import (
+    MISSION_AREAS,
+    get_area_missions,
+    count_completed_area_missions,
+    is_area_unlocked
+)
 
 
 class GameEngine:
@@ -39,11 +45,20 @@ class GameEngine:
         print(f"\nWelcome, {self.player.name}. Your Git journey begins now.")
 
     def main_menu(self):
+        """
+        Shows the main menu and keeps the game running until the player exits.
+
+        The player can:
+        - Open the mission map
+        - View stats
+        - View learned commands
+        - Save and exit
+        """
         while True:
             print("\n" + "=" * 30)
             print("MAIN MENU")
             print("=" * 30)
-            print("1. Start next mission")
+            print("1. Open mission map")
             print("2. View player stats")
             print("3. View learned commands")
             print("4. Save and exit")
@@ -51,7 +66,7 @@ class GameEngine:
             choice = input("\nChoose an option: ").strip()
 
             if choice == "1":
-                self.start_next_mission()
+                self.show_mission_map()
             elif choice == "2":
                 self.show_stats()
             elif choice == "3":
@@ -62,6 +77,119 @@ class GameEngine:
                 break
             else:
                 print("\nInvalid choice. Try again.")
+
+    def show_mission_map(self):
+        """
+        Shows all mission areas available in the game.
+
+        The player can choose an unlocked area to view its missions.
+        Locked areas are shown, but cannot be entered yet.
+        """
+        area_keys = list(MISSION_AREAS.keys())
+
+        while True:
+            print("\n" + "=" * 40)
+            print("MISSION MAP")
+            print("=" * 40)
+
+            for index, area_key in enumerate(area_keys, start=1):
+                area = MISSION_AREAS[area_key]
+
+                total_missions = len(get_area_missions(area_key, MISSIONS))
+                completed_missions = count_completed_area_missions(
+                    area_key,
+                    MISSIONS,
+                    self.player.completed_missions
+                )
+
+                if is_area_unlocked(area, self.player):
+                    lock_status = "Unlocked"
+                else:
+                    lock_status = f"Locked - Requires level {area['required_level']}"
+
+                print(
+                    f"{index}. {area['name']} "
+                    f"({completed_missions}/{total_missions}) - {lock_status}"
+                )
+
+            print("0. Back to main menu")
+
+            choice = input("\nChoose an area: ").strip()
+
+            if choice == "0":
+                return
+
+            if not choice.isdigit():
+                print("\nPlease enter a valid number.")
+                continue
+
+            selected_index = int(choice)
+
+            if selected_index < 1 or selected_index > len(area_keys):
+                print("\nThat area does not exist.")
+                continue
+
+            selected_area_key = area_keys[selected_index - 1]
+            selected_area = MISSION_AREAS[selected_area_key]
+
+            if not is_area_unlocked(selected_area, self.player):
+                print(
+                    f"\n{selected_area['name']} is locked. "
+                    f"Reach level {selected_area['required_level']} to unlock it."
+                )
+                continue
+
+            self.show_area_missions(selected_area_key)
+
+    def show_area_missions(self, area_key):
+        """
+        Shows the missions inside a selected area.
+
+        The player can choose an incomplete mission to play.
+        Completed missions are shown as completed.
+        """
+        area = MISSION_AREAS[area_key]
+        area_missions = get_area_missions(area_key, MISSIONS)
+
+        while True:
+            print("\n" + "=" * 40)
+            print(area["name"].upper())
+            print("=" * 40)
+            print(area["description"])
+            print()
+
+            for index, mission in enumerate(area_missions, start=1):
+                if mission["id"] in self.player.completed_missions:
+                    status = "Completed"
+                else:
+                    status = "Incomplete"
+
+                print(f"{index}. {mission['title']} - {status}")
+
+            print("0. Back to mission map")
+
+            choice = input("\nChoose a mission: ").strip()
+
+            if choice == "0":
+                return
+
+            if not choice.isdigit():
+                print("\nPlease enter a valid number.")
+                continue
+
+            selected_index = int(choice)
+
+            if selected_index < 1 or selected_index > len(area_missions):
+                print("\nThat mission does not exist.")
+                continue
+
+            selected_mission = area_missions[selected_index - 1]
+
+            if selected_mission["id"] in self.player.completed_missions:
+                print("\nYou have already completed this mission.")
+                continue
+
+            self.play_mission(selected_mission)
 
     def start_next_mission(self):
         for mission in MISSIONS:
