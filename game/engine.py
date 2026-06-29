@@ -20,6 +20,7 @@ from game.ui import (
     print_story,
     create_menu_table
 )
+from game.sandbox_manager import create_sandbox, validate_sandbox_mission
 
 
 class GameEngine:
@@ -270,11 +271,28 @@ class GameEngine:
         """
         Runs a single mission.
 
-        This method:
-        - Shows the mission title and story
-        - Asks the player a Git command question
-        - Checks the answer using the flexible answer checker
-        - Rewards the player if they are correct
+        This method supports two mission types:
+
+        1. Quiz missions:
+           The player types an answer directly into the game.
+
+        2. Sandbox missions:
+           The game creates a temporary sandbox folder where the player can run Git commands.
+           The game then checks whether the objective was completed.
+        """
+        mission_type = mission.get("mission_type", "quiz")
+
+        if mission_type == "sandbox":
+            self.play_sandbox_mission(mission)
+            return
+
+        self.play_quiz_mission(mission)
+
+    def play_quiz_mission(self, mission):
+        """
+        Runs a normal quiz-style mission.
+
+        The player types an answer directly into the game.
         """
         print_title(
             f"MISSION {mission['id']}: {mission['title']}",
@@ -287,15 +305,67 @@ class GameEngine:
         answer = input("> ").strip()
 
         if is_correct_answer(answer, mission):
-            print_success("Correct!")
-            print_info(f"Command unlocked: {mission['command_unlocked']}")
-
-            self.player.add_xp(mission["xp"])
-            self.player.complete_mission(mission["id"])
-            save_player(self.player)
+            self.complete_mission(mission)
         else:
             print_error("Not quite.")
             print_warning(f"Hint: {mission['hint']}")
+
+    def play_sandbox_mission(self, mission):
+        """
+        Runs a sandbox-style mission.
+
+        The game creates a temporary sandbox folder where the player can run Git commands.
+        The game then checks whether the objective was completed.
+        """
+        print_title(
+            f"SANDBOX MISSION {mission['id']}: {mission['title']}",
+            f"Reward: {mission['xp']} XP"
+        )
+
+        print_story(mission["story"])
+
+        sandbox_path = create_sandbox(mission["id"])
+        absolute_path = sandbox_path.resolve()
+
+        print_info("A clean sandbox folder has been created for this mission.")
+        console.print()
+        console.print("[bold cyan]Sandbox folder:[/bold cyan]")
+        console.print(f"[white]{absolute_path}[/white]")
+        console.print()
+
+        console.print("[bold yellow]Instructions:[/bold yellow]")
+        console.print("1. Open a new terminal tab or split terminal in VS Code.")
+        console.print("2. Move into the sandbox folder using cd.")
+        console.print("3. Run the required Git command.")
+        console.print("4. Return to this game terminal and press Enter.")
+        console.print()
+
+        console.print("[bold cyan]Command to enter the sandbox:[/bold cyan]")
+        console.print(f"cd {absolute_path}")
+        console.print()
+
+        console.print(f"[bold white]{mission['question']}[/bold white]")
+        input("> Press Enter after completing the sandbox task...")
+
+        if validate_sandbox_mission(mission, sandbox_path):
+            self.complete_mission(mission)
+        else:
+            print_error("Sandbox objective not completed yet.")
+            print_warning(f"Hint: {mission['hint']}")
+            print_info("You can select the mission again to retry with a fresh sandbox.")
+
+    def complete_mission(self, mission):
+        """
+        Rewards the player and saves progress after a mission is completed.
+
+        This method is used by both quiz missions and sandbox missions.
+        """
+        print_success("Correct!")
+        print_info(f"Command unlocked: {mission['command_unlocked']}")
+
+        self.player.add_xp(mission["xp"])
+        self.player.complete_mission(mission["id"])
+        save_player(self.player)
 
     def show_stats(self):
         """

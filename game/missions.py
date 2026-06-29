@@ -126,5 +126,19 @@ MISSIONS = [
         "xp": 100,
         "command_unlocked": "git switch",
         "hint": "Use git switch followed by the branch name."
-    }
+    },
+    {
+    "id": 9,
+    "area": "git_basics",
+    "title": "Sandbox Trial: Awaken the Repository",
+    "story": "You have entered a real practice folder. Your task is to initialize it as a Git repository using the terminal.",
+    "question": "Run the required Git command inside the sandbox folder. When you are done, return here and press Enter.",
+    "accepted_answers": [],
+    "accepted_patterns": [],
+    "xp": 125,
+    "command_unlocked": "git init",
+    "hint": "Open the sandbox folder in your terminal and run: git init",
+    "mission_type": "sandbox",
+    "sandbox_validation": "is_git_repository"
+}
 ]

@@ -27,6 +27,9 @@ build/
 dist/
 *.egg-info/
 
+# GitQuest sandbox folders
+sandboxes/
+
 # Local game progress
 # Keep this ignored if you do not want your personal save data pushed to GitHub.
 data/progress.json

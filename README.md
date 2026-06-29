@@ -1,8 +1,8 @@
 # GitQuest: The Version Control Adventure
 
-**GitQuest** is a terminal-based Python game that helps developers learn Git commands in a fun and interactive way.
+**GitQuest** is a terminal-based Python learning game that helps developers practice Git commands in a fun, interactive, and story-driven way.
 
-Players complete missions, unlock Git commands, earn XP, level up, and move through different learning areas such as Git Basics and Branching Forest.
+Players complete missions, unlock commands, earn XP, level up, explore mission areas, and complete real Git challenges inside sandbox folders.
 
 This project is being built as both a learning tool and a portfolio project.
 
@@ -15,10 +15,49 @@ This project is being built as both a learning tool and a portfolio project.
 * Player name creation
 * XP and leveling system
 * Mission map with different learning areas
-* Git command missions
+* Git command quiz missions
 * Flexible answer checking for realistic Git commands
-* Unlockable Git commands
+* Real Git sandbox missions
 * Local JSON save system
+* Unlockable Git commands
+* `.gitignore` for virtual environments, cache files, save data, and sandbox folders
+
+---
+
+## Mission Areas
+
+Current and planned mission areas include:
+
+* Git Basics
+* Branching Forest
+* Merge Conflict Dungeon
+* Remote Repository Citadel
+
+Some areas may be locked until the player reaches a higher level.
+
+---
+
+## Real Git Sandbox Challenges
+
+GitQuest includes sandbox missions where the game creates a temporary practice folder.
+
+The player then runs real Git commands inside that folder.
+
+Example:
+
+```bash
+git init
+```
+
+The game checks the sandbox folder to confirm whether the task was completed successfully.
+
+Sandbox folders are created locally inside:
+
+```text
+sandboxes/
+```
+
+The `sandboxes/` folder is ignored by Git so practice repositories are not pushed to GitHub.
 
 ---
 
@@ -26,12 +65,14 @@ This project is being built as both a learning tool and a portfolio project.
 
 Future improvements include:
 
-* Real Git sandbox challenges
+* More real Git sandbox missions
+* Create your first commit challenge
+* Branch creation challenges
 * Merge conflict missions
 * Remote repository and GitHub missions
-* More mission areas
-* Progress bars and improved UI polish
-* SQL learning path using SQLite
+* More UI polish
+* SQLite-based SQL learning path
+* Automated tests
 
 ---
 
@@ -62,14 +103,22 @@ gitquest/
 │   ├── mission_map.py
 │   ├── missions.py
 │   ├── player.py
+│   ├── sandbox_manager.py
 │   ├── save_system.py
 │   └── ui.py
 │
-└── data/
-    └── progress.json
+├── data/
+│   └── .gitkeep
+│
+└── sandboxes/
 ```
 
-Note: `data/progress.json` is used for local save data and is ignored by Git.
+Notes:
+
+* `data/progress.json` is created locally when the player saves progress.
+* `data/progress.json` is ignored by Git.
+* `sandboxes/` is created locally for real Git practice missions.
+* `sandboxes/` is ignored by Git.
 
 ---
 
@@ -100,7 +149,7 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-When the virtual environment is active, your terminal should show something like:
+When the virtual environment is active, the terminal should show something like:
 
 ```text
 (.venv)
@@ -124,7 +173,7 @@ On macOS/Linux:
 python main.py
 ```
 
-If that does not work, use:
+If needed, use:
 
 ```bash
 python3 main.py
@@ -151,16 +200,9 @@ You can then choose from the main menu:
 4. Save and exit
 ```
 
-The mission map contains different learning areas.
+Each mission teaches or tests a Git command.
 
-Current areas include:
-
-* Git Basics
-* Branching Forest
-* Merge Conflict Dungeon
-* Remote Repository Citadel
-
-Some areas may be locked until the player reaches a higher level.
+Some missions are quiz-based. Others create real sandbox folders where you must run actual Git commands.
 
 ---
 
@@ -207,6 +249,20 @@ You do not need to deactivate it every time, but it is good practice when you ar
 
 ---
 
+## Local Save Data
+
+Player progress is stored locally in:
+
+```text
+data/progress.json
+```
+
+This file is ignored by Git so each player has their own save data.
+
+If the file does not exist, GitQuest creates it automatically when progress is saved.
+
+---
+
 ## Development Roadmap
 
 ### Completed
@@ -219,14 +275,17 @@ You do not need to deactivate it every time, but it is good practice when you ar
 * [x] Add mission map
 * [x] Add Rich terminal UI
 * [x] Add `.gitignore`
+* [x] Add local data folder placeholder
+* [x] Add real Git sandbox mission support
 
 ### Planned
 
-* [ ] Add real Git sandbox challenges
+* [ ] Add more sandbox missions
+* [ ] Add first commit sandbox challenge
+* [ ] Add branch sandbox challenge
 * [ ] Add merge conflict missions
 * [ ] Add remote repository missions
 * [ ] Add SQLite-based SQL learning path
-* [ ] Add more UI polish
 * [ ] Add tests
 
 ---
@@ -239,14 +298,18 @@ This project demonstrates:
 * Clean project structure
 * Terminal application design
 * Git and GitHub workflow
+* Branch-based development
+* Pull request workflow
 * JSON file handling
+* Local save data
 * Virtual environment usage
 * Dependency management with `requirements.txt`
 * User interface improvements with Rich
-* Iterative feature development using branches and pull requests
+* Running and validating real Git commands from Python
+* Iterative feature development
 
 ---
 
 ## Author
 
-Built by **James Maherry** as a Python portfolio project and Git learning tool.
+Built by **James Maherry as a Python portfolio project and Git learning tool.
