@@ -127,18 +127,47 @@ MISSIONS = [
         "command_unlocked": "git switch",
         "hint": "Use git switch followed by the branch name."
     },
+        {
+        "id": 9,
+        "area": "git_basics",
+        "title": "Sandbox Trial: Awaken the Repository",
+        "story": "You have entered a real practice folder. Your task is to initialize it as a Git repository using the terminal.",
+        "question": "Run the required Git command inside the sandbox folder. When you are done, return here and press Enter.",
+        "accepted_answers": [],
+        "accepted_patterns": [],
+        "xp": 125,
+        "command_unlocked": "git init",
+        "hint": "Open the sandbox folder in your terminal and run: git init",
+        "mission_type": "sandbox",
+        "sandbox_validation": "is_git_repository"
+    },
     {
-    "id": 9,
-    "area": "git_basics",
-    "title": "Sandbox Trial: Awaken the Repository",
-    "story": "You have entered a real practice folder. Your task is to initialize it as a Git repository using the terminal.",
-    "question": "Run the required Git command inside the sandbox folder. When you are done, return here and press Enter.",
-    "accepted_answers": [],
-    "accepted_patterns": [],
-    "xp": 125,
-    "command_unlocked": "git init",
-    "hint": "Open the sandbox folder in your terminal and run: git init",
-    "mission_type": "sandbox",
-    "sandbox_validation": "is_git_repository"
-}
+        "id": 10,
+        "area": "git_basics",
+        "title": "Sandbox Trial: First Commit",
+        "story": "Your repository has awakened, but it has no history. Create a file, stage it, and make your first commit.",
+        "question": "Inside the sandbox folder, initialize Git, create any file, stage it, and make at least one commit. When you are done, return here and press Enter.",
+        "accepted_answers": [],
+        "accepted_patterns": [],
+        "xp": 150,
+        "command_unlocked": "git commit",
+        "hint": "Run git init, create a file, run git add ., then run git commit -m \"First commit\".",
+        "mission_type": "sandbox",
+        "sandbox_validation": "has_commit"
+    },
+    {
+        "id": 11,
+        "area": "branching_forest",
+        "title": "Sandbox Trial: Forge a New Branch",
+        "story": "A dangerous change is ahead. You must protect the main path by creating a separate feature branch.",
+        "question": "Inside the sandbox folder, initialize Git and create a branch called feature/sandbox-practice. When you are done, return here and press Enter.",
+        "accepted_answers": [],
+        "accepted_patterns": [],
+        "xp": 150,
+        "command_unlocked": "git switch -c",
+        "hint": "Run git init, then run git switch -c feature/sandbox-practice.",
+        "mission_type": "sandbox",
+        "sandbox_validation": "has_branch",
+        "expected_branch": "feature/sandbox-practice"
+    }
 ]

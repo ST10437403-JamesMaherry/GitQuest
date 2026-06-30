@@ -347,12 +347,20 @@ class GameEngine:
         console.print(f"[bold white]{mission['question']}[/bold white]")
         input("> Press Enter after completing the sandbox task...")
 
-        if validate_sandbox_mission(mission, sandbox_path):
+        #The sandbox validator now returns two values:
+        # 1. passed_validation: True or False
+        # 2. feedback_message: A helpful message explaining the result
+        passed_validation, feedback_message = validate_sandbox_mission(mission, sandbox_path)
+
+        if passed_validation:
+            print_success(feedback_message)
             self.complete_mission(mission)
+
         else:
             print_error("Sandbox objective not completed yet.")
+            print_warning(feedback_message)
             print_warning(f"Hint: {mission['hint']}")
-            print_info("You can select the mission again to retry with a fresh sandbox.")
+            print_info("You can select this mission again to retry with a fresh sandbox folder.")
 
     def complete_mission(self, mission):
         """
