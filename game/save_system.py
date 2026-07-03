@@ -40,3 +40,25 @@ def load_player():
         xp=data["xp"],
         completed_missions=data["completed_missions"]
     )
+
+def reset_progress():
+    """
+    Resets the player's saved progress.
+
+    This deletes the progress.json file so the game behaves like it is
+    being started for the first time again.
+
+    Returns:
+        True if a save file was deleted.
+        False if there was no save file to delete.
+    """
+    # Check whether the save file currently exists.
+    # We do this first so the game can give accurate feedback to the player.
+    if SAVE_FILE.exists():
+        SAVE_FILE.unlink()
+
+        # Returning True tells the game engine that progress was actually reset.
+        return True
+
+    # Returning False tells the game engine there was no saved progress to reset.
+    return False

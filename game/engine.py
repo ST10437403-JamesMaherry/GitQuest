@@ -2,7 +2,7 @@ from rich.table import Table
 
 from game.player import Player
 from game.missions import MISSIONS
-from game.save_system import save_player, load_player
+from game.save_system import save_player, load_player, reset_progress
 from game.answer_checker import is_correct_answer
 from game.mission_map import (
     MISSION_AREAS,
@@ -99,7 +99,8 @@ class GameEngine:
             table.add_row("1", "Open mission map")
             table.add_row("2", "View player stats")
             table.add_row("3", "View learned commands")
-            table.add_row("4", "Save and exit")
+            table.add_row("4", "Reset progress")
+            table.add_row("5", "Save and exit")
 
             console.print()
             console.print(table)
@@ -113,11 +114,53 @@ class GameEngine:
             elif choice == "3":
                 self.show_learned_commands()
             elif choice == "4":
+                self.reset_player_progress()
+            elif choice == "5":
                 save_player(self.player)
                 print_success("Progress saved. Goodbye!")
                 break
             else:
                 print_error("Invalid choice. Try again.")
+
+    def reset_player_progress(self):
+        """
+        Resets the current player's progress after confirmation.
+        
+        This method:
+        - Warns the player that progress will be lost
+        - Deletes the saved progress file
+        - Creates a new player profile
+        - Saves the new player immediately
+        """
+
+        print_warning("Are you sure you want to reset your progress? This cannot be undone.")
+        print_warning("Your completed missions, XP, and level will be lost.")
+
+        confirmation = input("Type 'RESET' to confirm: ").strip()
+
+        # The reset should only happen if the player types the confirmation word exactly
+        # This is to prevent accidental resets from a simple 'yes' or 'y' input.
+        if confirmation != "RESET":
+            print_info("Progress reset canceled.")
+            return
+        
+        # Delete the current saved file from the data folder
+        progress_was_deleted = reset_progress()
+
+        if progress_was_deleted:
+            print_success("Saved progress has been deleted")
+        else:
+            print_warning("No saved progress file was found.")
+
+        # Clear the player currently stored in memory.
+        # This is important because deleting the file alone does not reset self.player
+        self.player = None
+
+        print_info("Create a new player profile to begin again")
+
+        # Reuse the existing player creation flow 
+        self.load_or_create_player()
+
 
     def show_mission_map(self):
         """
