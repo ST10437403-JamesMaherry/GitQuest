@@ -92,6 +92,7 @@ class GameEngine:
         - Open the mission map
         - View stats
         - View learned commands
+        - Reset progress
         - Save and exit
         """
         while True:
@@ -125,42 +126,40 @@ class GameEngine:
     def reset_player_progress(self):
         """
         Resets the current player's progress after confirmation.
-        
+
         This method:
         - Warns the player that progress will be lost
         - Deletes the saved progress file
         - Creates a new player profile
         - Saves the new player immediately
         """
-
         print_warning("Are you sure you want to reset your progress? This cannot be undone.")
         print_warning("Your completed missions, XP, and level will be lost.")
 
         confirmation = input("Type 'RESET' to confirm: ").strip()
 
-        # The reset should only happen if the player types the confirmation word exactly
-        # This is to prevent accidental resets from a simple 'yes' or 'y' input.
+        # The reset should only happen if the player types the confirmation word exactly.
+        # This prevents accidental resets from a simple 'yes' or 'y' input.
         if confirmation != "RESET":
             print_info("Progress reset canceled.")
             return
-        
-        # Delete the current saved file from the data folder
+
+        # Delete the current saved file from the data folder.
         progress_was_deleted = reset_progress()
 
         if progress_was_deleted:
-            print_success("Saved progress has been deleted")
+            print_success("Saved progress has been deleted.")
         else:
             print_warning("No saved progress file was found.")
 
         # Clear the player currently stored in memory.
-        # This is important because deleting the file alone does not reset self.player
+        # This is important because deleting the file alone does not reset self.player.
         self.player = None
 
-        print_info("Create a new player profile to begin again")
+        print_info("Create a new player profile to begin again.")
 
-        # Reuse the existing player creation flow 
+        # Reuse the existing player creation flow.
         self.load_or_create_player()
-
 
     def show_mission_map(self):
         """
@@ -240,8 +239,16 @@ class GameEngine:
         """
         Shows the missions inside a selected area.
 
-        The player can choose an incomplete mission to play.
-        Completed missions are shown as completed.
+        The player can choose any mission in the area.
+
+        If the mission is incomplete:
+        - It runs normally.
+        - XP is awarded when completed.
+
+        If the mission is already complete:
+        - The player can replay it for practice.
+        - No duplicate XP is awarded.
+        - The mission is not saved again.
         """
         area = MISSION_AREAS[area_key]
         area_missions = get_area_missions(area_key, MISSIONS)
@@ -290,11 +297,22 @@ class GameEngine:
 
             selected_mission = area_missions[selected_index - 1]
 
-            if selected_mission["id"] in self.player.completed_missions:
-                print_info("You have already completed this mission.")
-                continue
+            # Check whether this mission has already been completed.
+            # Completed missions are now replayable for practice.
+            is_replay = selected_mission["id"] in self.player.completed_missions
 
-            self.play_mission(selected_mission)
+            if is_replay:
+                print_info("You have already completed this mission.")
+                replay_choice = input("Replay this mission for practice? (y/n): ").strip().lower()
+
+                # If the player does not want to replay, return to the mission list.
+                if replay_choice != "y":
+                    print_info("Returning to the mission list.")
+                    continue
+
+            # Send the mission to the mission runner.
+            # is_replay tells the rest of the engine whether XP should be awarded.
+            self.play_mission(selected_mission, is_replay=is_replay)
 
     def start_next_mission(self):
         """
@@ -310,7 +328,7 @@ class GameEngine:
 
         print_info("You have completed all available missions!")
 
-    def play_mission(self, mission):
+    def play_mission(self, mission, is_replay=False):
         """
         Runs a single mission.
 
@@ -322,25 +340,38 @@ class GameEngine:
         2. Sandbox missions:
            The game creates a temporary sandbox folder where the player can run Git commands.
            The game then checks whether the objective was completed.
+
+        The is_replay flag is used when a completed mission is replayed.
+        In replay mode, the mission can be completed again for practice,
+        but no XP will be awarded.
         """
         mission_type = mission.get("mission_type", "quiz")
 
         if mission_type == "sandbox":
-            self.play_sandbox_mission(mission)
+            self.play_sandbox_mission(mission, is_replay=is_replay)
             return
 
-        self.play_quiz_mission(mission)
+        self.play_quiz_mission(mission, is_replay=is_replay)
 
-    def play_quiz_mission(self, mission):
+    def play_quiz_mission(self, mission, is_replay=False):
         """
         Runs a normal quiz-style mission.
 
         The player types an answer directly into the game.
+
+        If is_replay is True:
+        - The player may complete the mission again.
+        - No XP is awarded.
+        - Progress is not saved again.
         """
         print_title(
             f"MISSION {mission['id']}: {mission['title']}",
             f"Reward: {mission['xp']} XP"
         )
+
+        # Make it clear to the player that this is only for practice.
+        if is_replay:
+            print_info("Practice mode: this mission can be replayed, but no XP will be awarded.")
 
         print_story(mission["story"])
 
@@ -348,22 +379,31 @@ class GameEngine:
         answer = input("> ").strip()
 
         if is_correct_answer(answer, mission):
-            self.complete_mission(mission)
+            self.complete_mission(mission, is_replay=is_replay)
         else:
             print_error("Not quite.")
             print_warning(f"Hint: {mission['hint']}")
 
-    def play_sandbox_mission(self, mission):
+    def play_sandbox_mission(self, mission, is_replay=False):
         """
         Runs a sandbox-style mission.
 
         The game creates a temporary sandbox folder where the player can run Git commands.
         The game then checks whether the objective was completed.
+
+        If is_replay is True:
+        - The sandbox mission can be practised again.
+        - No XP is awarded.
+        - Progress is not saved again.
         """
         print_title(
             f"SANDBOX MISSION {mission['id']}: {mission['title']}",
             f"Reward: {mission['xp']} XP"
         )
+
+        # Make it clear to the player that this is only for practice.
+        if is_replay:
+            print_info("Practice mode: this sandbox mission can be replayed, but no XP will be awarded.")
 
         print_story(mission["story"])
 
@@ -390,30 +430,44 @@ class GameEngine:
         console.print(f"[bold white]{mission['question']}[/bold white]")
         input("> Press Enter after completing the sandbox task...")
 
-        #The sandbox validator now returns two values:
+        # The sandbox validator returns two values:
         # 1. passed_validation: True or False
-        # 2. feedback_message: A helpful message explaining the result
+        # 2. feedback_message: A helpful message explaining the result.
         passed_validation, feedback_message = validate_sandbox_mission(mission, sandbox_path)
 
         if passed_validation:
             print_success(feedback_message)
-            self.complete_mission(mission)
-
+            self.complete_mission(mission, is_replay=is_replay)
         else:
             print_error("Sandbox objective not completed yet.")
             print_warning(feedback_message)
             print_warning(f"Hint: {mission['hint']}")
             print_info("You can select this mission again to retry with a fresh sandbox folder.")
 
-    def complete_mission(self, mission):
+    def complete_mission(self, mission, is_replay=False):
         """
         Rewards the player and saves progress after a mission is completed.
 
         This method is used by both quiz missions and sandbox missions.
+
+        If is_replay is True:
+        - No XP is awarded.
+        - The mission is not added again to completed missions.
+        - The save file is not changed unnecessarily.
         """
         print_success("Correct!")
         print_info(f"Command unlocked: {mission['command_unlocked']}")
 
+        # If this is a replay, the player has already earned the reward before.
+        # This prevents completed missions from being used to farm duplicate XP.
+        if is_replay:
+            print_success(
+                "Practice run complete! No XP was awarded because this mission was already completed."
+            )
+            return
+
+        # Normal mission completion path.
+        # This is only used for missions the player has not completed before.
         self.player.add_xp(mission["xp"])
         self.player.complete_mission(mission["id"])
         save_player(self.player)
