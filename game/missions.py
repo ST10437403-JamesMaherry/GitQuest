@@ -1,4 +1,22 @@
+# All GitQuest missions are stored in this list.
+#
+# Each mission is a dictionary that tells the game:
+# - which area it belongs to
+# - what title/story/question to show
+# - which answers should be accepted
+# - how much XP to award
+# - which command gets unlocked
+# - whether the mission is a normal quiz or a sandbox mission
+#
+# Important:
+# Try not to change mission IDs after players have already made progress,
+# because completed missions are stored by ID inside progress.json.
+
 MISSIONS = [
+    # ============================================================
+    # GIT BASICS MISSIONS
+    # ============================================================
+
     {
         "id": 1,
         "area": "git_basics",
@@ -77,6 +95,11 @@ MISSIONS = [
         "command_unlocked": "git log",
         "hint": "This command displays previous commits."
     },
+
+    # ============================================================
+    # BRANCHING FOREST QUIZ MISSIONS
+    # ============================================================
+
     {
         "id": 6,
         "area": "branching_forest",
@@ -93,7 +116,7 @@ MISSIONS = [
         ],
         "xp": 100,
         "command_unlocked": "git switch -c",
-        "hint": "Use git switch with the -c option to create and move to a new branch."
+        "hint": "Use git switch -c followed by the new branch name, for example: git switch -c feature/new-feature."
     },
     {
         "id": 7,
@@ -127,7 +150,113 @@ MISSIONS = [
         "command_unlocked": "git switch",
         "hint": "Use git switch followed by the branch name."
     },
-        {
+    {
+        "id": 12,
+        "area": "branching_forest",
+        "title": "Planting a Branch",
+        "story": "You want to create a new branch, but you do not want to switch to it yet.",
+        "question": "Which Git command creates a new branch called feature/profile without switching to it?",
+        "accepted_answers": [
+            "git branch feature/profile"
+        ],
+        "accepted_patterns": [
+            r"git\s+branch\s+[\w\-/]+"
+        ],
+        "xp": 100,
+        "command_unlocked": "git branch <branch-name>",
+        "hint": "Use git branch followed by the new branch name."
+    },
+    {
+        "id": 13,
+        "area": "branching_forest",
+        "title": "Returning to Main",
+        "story": "Your experiment is finished. Before merging, you need to return to the main branch.",
+        "question": "Which Git command switches back to the main branch?",
+        "accepted_answers": [
+            "git switch main",
+            "git checkout main",
+            "git switch master",
+            "git checkout master"
+        ],
+        "accepted_patterns": [
+            r"git\s+switch\s+(main|master)",
+            r"git\s+checkout\s+(main|master)"
+        ],
+        "xp": 100,
+        "command_unlocked": "git switch main",
+        "hint": "Use git switch main. Some older repositories may use master instead of main."
+    },
+    {
+        "id": 14,
+        "area": "branching_forest",
+        "title": "Removing an Old Trail",
+        "story": "A finished feature branch is no longer needed. You want to delete it safely.",
+        "question": "Which Git command safely deletes a local branch called feature/old-menu?",
+        "accepted_answers": [
+            "git branch -d feature/old-menu"
+        ],
+        "accepted_patterns": [
+            r"git\s+branch\s+-d\s+[\w\-/]+"
+        ],
+        "xp": 125,
+        "command_unlocked": "git branch -d",
+        "hint": "Use git branch with the lowercase -d option for a safe local branch delete."
+    },
+    {
+        "id": 15,
+        "area": "branching_forest",
+        "title": "Forcing the Path Closed",
+        "story": "A broken branch was never merged, but you still want to remove it from your local repository.",
+        "question": "Which Git command force deletes a local branch called feature/broken-test?",
+        "accepted_answers": [
+            "git branch -D feature/broken-test"
+        ],
+        "accepted_patterns": [
+            r"git\s+branch\s+-D\s+[\w\-/]+"
+        ],
+        "xp": 125,
+        "command_unlocked": "git branch -D",
+        "hint": "Use uppercase -D when you want to force delete a local branch."
+    },
+    {
+        "id": 16,
+        "area": "branching_forest",
+        "title": "Joining Two Paths",
+        "story": "Your feature branch is complete. You are standing on main and want to bring the feature work into it.",
+        "question": "Which Git command merges a branch called feature/login into your current branch?",
+        "accepted_answers": [
+            "git merge feature/login"
+        ],
+        "accepted_patterns": [
+            r"git\s+merge\s+[\w\-/]+"
+        ],
+        "xp": 150,
+        "command_unlocked": "git merge",
+        "hint": "First switch to the branch receiving the changes, then run git merge followed by the branch you want to merge in."
+    },
+    {
+        "id": 17,
+        "area": "branching_forest",
+        "title": "Seeing Every Trail",
+        "story": "You want to inspect both local and remote branches before deciding where to work next.",
+        "question": "Which Git command lists all local and remote branches?",
+        "accepted_answers": [
+            "git branch -a",
+            "git branch --all"
+        ],
+        "accepted_patterns": [
+            r"git\s+branch\s+(-a|--all)"
+        ],
+        "xp": 100,
+        "command_unlocked": "git branch -a",
+        "hint": "Use git branch with -a or --all to show both local and remote branches."
+    },
+
+    # ============================================================
+    # SANDBOX MISSIONS
+    # ============================================================
+
+    {
         "id": 9,
         "area": "git_basics",
         "title": "Sandbox Trial: Awaken the Repository",
