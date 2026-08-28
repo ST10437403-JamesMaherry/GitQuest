@@ -1,6 +1,3 @@
-from game.ui import print_success
-
-
 class Player:
     def __init__(self, name, level=1, xp=0, completed_missions=None):
         """
@@ -25,7 +22,6 @@ class Player:
             amount: The amount of XP to add.
         """
         self.xp += amount
-        print_success(f"You gained {amount} XP!")
 
         if self.xp >= self.level * 100:
             self.level_up()
@@ -38,7 +34,6 @@ class Player:
         """
         self.level += 1
         self.xp = 0
-        print_success(f"Level up! You are now level {self.level}.")
 
     def complete_mission(self, mission_id):
         """

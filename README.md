@@ -82,7 +82,7 @@ Future improvements include:
 * Rich terminal UI
 * JSON for local save data
 * Git and GitHub
-* VS Code
+* Modern `pyproject.toml` packaging
 
 ---
 
@@ -90,35 +90,33 @@ Future improvements include:
 
 ```text
 gitquest/
-│
-├── main.py
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
-├── game/
-│   ├── __init__.py
-│   ├── answer_checker.py
-│   ├── engine.py
-│   ├── mission_map.py
-│   ├── missions.py
-│   ├── player.py
-│   ├── sandbox_manager.py
-│   ├── save_system.py
-│   └── ui.py
-│
-├── data/
-│   └── .gitkeep
-│
-└── sandboxes/
+|-- pyproject.toml
+|-- README.md
+|-- requirements.txt
+|-- src/gitquest/
+|   |-- application/     # Game and mission orchestration
+|   |-- domain/          # Core rules, player model, and current missions
+|   |-- runtime/         # Disposable mission workspaces
+|   |-- adapters/        # Git and future security-tool integrations
+|   |-- persistence/     # Progress and future evidence storage
+|   |-- interfaces/      # Terminal presentation
+|   `-- reporting/       # Future evidence reports
+|-- scenarios/           # Future versioned mission packs and fixtures
+|-- policies/            # Future policy-as-code checks
+|-- tests/               # Unit, contract, integration, and scenario tests
+|-- docs/                # Architecture, ADRs, and threat models
+|-- data/                 # Local progress data
+`-- sandboxes/            # Generated practice repositories
 ```
 
 Notes:
 
+* The Python package uses a `src/` layout and is installed as the `gitquest` command.
 * `data/progress.json` is created locally when the player saves progress.
 * `data/progress.json` is ignored by Git.
 * `sandboxes/` is created locally for real Git practice missions.
 * `sandboxes/` is ignored by Git.
+* See `docs/architecture/project-structure.md` for package responsibilities and dependency direction.
 
 ---
 
@@ -160,29 +158,27 @@ When the virtual environment is active, the terminal should show something like:
 ### 3. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -e .
+```
+
+For development tools such as pytest and Ruff:
+
+```bash
+python -m pip install -e ".[dev]"
 ```
 
 ---
 
 ### 4. Run the Game
 
-On macOS/Linux:
-
 ```bash
-python main.py
+gitquest
 ```
 
-If needed, use:
+You can also run the installed package directly:
 
 ```bash
-python3 main.py
-```
-
-On Windows:
-
-```bash
-python main.py
+python -m gitquest
 ```
 
 ---
@@ -197,7 +193,8 @@ You can then choose from the main menu:
 1. Open mission map
 2. View player stats
 3. View learned commands
-4. Save and exit
+4. Reset progress
+5. Save and exit
 ```
 
 Each mission teaches or tests a Git command.
@@ -303,7 +300,7 @@ This project demonstrates:
 * JSON file handling
 * Local save data
 * Virtual environment usage
-* Dependency management with `requirements.txt`
+* Modern Python packaging and dependency management with `pyproject.toml`
 * User interface improvements with Rich
 * Running and validating real Git commands from Python
 * Iterative feature development
@@ -312,4 +309,4 @@ This project demonstrates:
 
 ## Author
 
-Built by **James Maherry as a Python portfolio project and Git learning tool.
+Built by **James Maherry** as a Python portfolio project and Git learning tool.

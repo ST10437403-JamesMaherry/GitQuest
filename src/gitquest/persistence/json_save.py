@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from game.player import Player
+from gitquest.domain.player import Player
 
 
 SAVE_FILE = Path("data/progress.json")

@@ -1,16 +1,16 @@
 from rich.table import Table
 
-from game.player import Player
-from game.missions import MISSIONS
-from game.save_system import save_player, load_player, reset_progress
-from game.answer_checker import is_correct_answer
-from game.mission_map import (
+from gitquest.application.sandbox_validation import validate_sandbox_mission
+from gitquest.domain.answer_checker import is_correct_answer
+from gitquest.domain.mission_map import (
     MISSION_AREAS,
     get_area_missions,
     count_completed_area_missions,
     is_area_unlocked
 )
-from game.ui import (
+from gitquest.domain.missions import MISSIONS
+from gitquest.domain.player import Player
+from gitquest.interfaces.terminal_ui import (
     console,
     print_title,
     print_success,
@@ -20,7 +20,8 @@ from game.ui import (
     print_story,
     create_menu_table
 )
-from game.sandbox_manager import create_sandbox, validate_sandbox_mission
+from gitquest.persistence.json_save import load_player, reset_progress, save_player
+from gitquest.runtime.workspace import create_sandbox
 
 
 class GameEngine:
@@ -41,7 +42,7 @@ class GameEngine:
         """
         Starts the game.
 
-        This method is called from main.py and controls the first flow of the game.
+        This method is called from the CLI entry point and controls the first flow of the game.
         """
         self.show_intro()
         self.load_or_create_player()
@@ -468,7 +469,13 @@ class GameEngine:
 
         # Normal mission completion path.
         # This is only used for missions the player has not completed before.
+        previous_level = self.player.level
         self.player.add_xp(mission["xp"])
+        print_success(f"You gained {mission['xp']} XP!")
+
+        if self.player.level > previous_level:
+            print_success(f"Level up! You are now level {self.player.level}.")
+
         self.player.complete_mission(mission["id"])
         save_player(self.player)
 
