@@ -21,6 +21,9 @@ This project is being built as both a learning tool and a portfolio project.
 * Safety-marked disposable mission workspaces
 * `gitquest doctor` capability diagnostics
 * Lite, Standard, and Full runtime profiles for gradual DevSecOps expansion
+* Data-driven security scenario packs with declarative scoring
+* Supply Chain Siege incident-response scenario
+* Markdown and JSON evidence reports for portfolio demonstrations
 * Local JSON save system
 * Unlockable Git commands
 * `.gitignore` for virtual environments, cache files, save data, and sandbox folders
@@ -106,11 +109,12 @@ gitquest/
 |   |-- persistence/     # Progress and future evidence storage
 |   |-- interfaces/      # Terminal presentation
 |   `-- reporting/       # Future evidence reports
-|-- scenarios/           # Future versioned mission packs and fixtures
+|-- scenarios/           # Versioned security scenario packs and fixtures
 |-- policies/            # Future policy-as-code checks
 |-- tests/               # Unit, contract, integration, and scenario tests
 |-- docs/                # Architecture, ADRs, and threat models
 |-- data/                 # Local progress data
+|-- artifacts/            # Generated local evidence reports
 `-- sandboxes/            # Generated practice repositories
 ```
 
@@ -210,6 +214,30 @@ The current campaign uses the **Lite** profile, which needs only Python and Git.
 list optional free, open-source tools planned for later DevSecOps missions; missing tools do not
 prevent the Lite campaign from running.
 
+### 6. Run the Security Scenario
+
+List the available scenario packs:
+
+```bash
+gitquest scenario list
+```
+
+Create a fresh copy of the first incident repository:
+
+```bash
+gitquest scenario start supply-chain-siege
+```
+
+GitQuest prints the disposable workspace path and the objectives. Read `INCIDENT.md` inside that
+workspace, perform the Git and workflow remediation, and then run:
+
+```bash
+gitquest scenario verify supply-chain-siege
+```
+
+Verification scores the response out of 100 and writes portfolio-safe Markdown and JSON reports to
+`artifacts/reports/`. Starting the scenario again safely resets only that marked scenario workspace.
+
 ---
 
 ## How to Play
@@ -306,6 +334,9 @@ If the file does not exist, GitQuest creates it automatically when progress is s
 * [x] Add safety-marked disposable workspaces
 * [x] Add environment diagnostics and runtime profiles
 * [x] Add the first unit and integration test suite
+* [x] Add validated data-driven scenario manifests
+* [x] Add the Supply Chain Siege incident-response scenario
+* [x] Add scored Markdown and JSON evidence reports
 
 ### Planned
 
@@ -315,7 +346,8 @@ If the file does not exist, GitQuest creates it automatically when progress is s
 * [ ] Add merge conflict missions
 * [ ] Add remote repository missions
 * [ ] Add SQLite-based SQL learning path
-* [ ] Add scenario-pack validation and security-tool contract tests
+* [ ] Add security-tool contract tests
+* [ ] Add pipeline and cloud-native scenario packs
 
 ---
 
@@ -338,6 +370,8 @@ This project demonstrates:
 * Defensive filesystem handling and safe disposable environments
 * Capability detection for progressive DevSecOps tooling
 * Automated unit and integration testing
+* Schema validation and declarative security controls
+* Reproducible incident-response labs and evidence reporting
 * Iterative feature development
 
 ---

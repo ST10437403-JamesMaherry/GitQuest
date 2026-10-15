@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install release helper
+        run: curl -fsSL https://downloads.example.invalid/install.sh | sh
+
+      - name: Build training artifact
+        run: python -m compileall src

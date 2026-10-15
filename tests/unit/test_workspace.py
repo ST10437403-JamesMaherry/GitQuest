@@ -1,3 +1,4 @@
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,7 +8,9 @@ from gitquest.runtime.workspace import (
     ROOT_MARKER,
     WORKSPACE_MARKER,
     WorkspaceSafetyError,
+    create_managed_workspace,
     create_sandbox,
+    get_managed_workspace,
 )
 
 
@@ -85,6 +88,37 @@ class WorkspaceTests(unittest.TestCase):
                 create_sandbox("safe", root=root)
 
             self.assertEqual(important_file.read_text(), "do not delete")
+
+    def test_existing_managed_workspace_can_be_opened_without_reset(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "sandboxes"
+            workspace = create_managed_workspace("scenario_supply-chain-siege", root=root)
+            evidence = workspace / "evidence.txt"
+            evidence.write_text("preserve me")
+
+            opened = get_managed_workspace("scenario_supply-chain-siege", root=root)
+
+            self.assertEqual(opened, workspace)
+            self.assertEqual(evidence.read_text(), "preserve me")
+
+    def test_relative_workspace_parent_symlink_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary_path = Path(temporary_directory)
+            real_root = temporary_path / "real"
+            real_root.mkdir()
+            link = temporary_path / "linked"
+            try:
+                link.symlink_to(real_root, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("Symbolic links are unavailable on this platform.")
+
+            previous_directory = Path.cwd()
+            try:
+                os.chdir(temporary_path)
+                with self.assertRaises(WorkspaceSafetyError):
+                    create_managed_workspace("scenario_safe", root=Path("linked") / "root")
+            finally:
+                os.chdir(previous_directory)
 
 
 if __name__ == "__main__":

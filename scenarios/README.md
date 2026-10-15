@@ -1,15 +1,22 @@
 # Scenario packs
 
-This directory will hold versioned, data-driven mission packs. Keep scenario content outside
-the Python package so new campaigns can be added without changing the application engine.
+This directory holds versioned, data-driven mission packs. Scenario content stays outside the
+Python package so new campaigns can be added without changing the application engine.
 
-Each scenario should eventually contain:
+Each scenario contains:
 
-- a validated mission manifest;
+- a validated `scenario.json` manifest;
 - a reproducible starting fixture;
 - deterministic failing and passing states;
 - hints and a debrief;
 - expected evidence and safety constraints.
 
-The current Python mission catalogue remains in `src/gitquest/domain/missions.py` until the
-manifest loader is created.
+`supply_chain/supply-chain-siege/` is the reference implementation. Its objectives use generic,
+declarative check types and must total 100 points. The legacy quiz catalogue remains in
+`src/gitquest/domain/missions.py` while it is migrated incrementally.
+
+Validate all scenario behavior with:
+
+```bash
+python -m unittest discover -s tests -v
+```

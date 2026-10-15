@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import subprocess
 from pathlib import Path
-from typing import Sequence
+from typing import Mapping, Optional, Sequence
 
 
 GIT_TIMEOUT_SECONDS = 10
@@ -15,6 +15,7 @@ def run_git_command(
     sandbox_path: Path,
     command: Sequence[str],
     timeout: int = GIT_TIMEOUT_SECONDS,
+    environment_overrides: Optional[Mapping[str, str]] = None,
 ) -> subprocess.CompletedProcess:
     """Run a non-interactive Git command with a timeout and captured output."""
     if not command or command[0] != "git":
@@ -28,6 +29,8 @@ def run_git_command(
             "LC_ALL": "C",
         }
     )
+    if environment_overrides:
+        environment.update(environment_overrides)
 
     try:
         return subprocess.run(

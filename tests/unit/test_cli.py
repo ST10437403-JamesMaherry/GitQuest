@@ -45,6 +45,14 @@ class CliTests(unittest.TestCase):
         self.assertEqual(main(["doctor"]), 1)
         render_mock.assert_called_once_with(report)
 
+    @patch("gitquest.cli.render_scenario_list")
+    @patch("gitquest.cli.list_scenarios")
+    def test_scenario_list_uses_catalog(self, list_scenarios_mock, render_mock):
+        list_scenarios_mock.return_value = ()
+
+        self.assertEqual(main(["scenario", "list"]), 0)
+        render_mock.assert_called_once_with(())
+
 
 if __name__ == "__main__":
     unittest.main()

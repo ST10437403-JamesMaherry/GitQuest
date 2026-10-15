@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "id": "supply-chain-siege",
+  "title": "Supply Chain Siege",
+  "summary": "You are the DevSecOps engineer responding to a compromised release pipeline. Remove the exposed credential, prevent it from returning, replace unsafe dependency installation, and leave an auditable remediation commit.",
+  "category": "supply_chain",
+  "difficulty": "Intermediate",
+  "profile": "Lite",
+  "objectives": [
+    {
+      "id": "contain-secret",
+      "title": "Contain the exposed credential",
+      "description": "Remove .env from both the working tree and the Git index.",
+      "points": 25,
+      "checks": [
+        {
+          "type": "path_absent",
+          "path": ".env"
+        },
+        {
+          "type": "git_path_untracked",
+          "path": ".env"
+        }
+      ]
+    },
+    {
+      "id": "prevent-secret-regression",
+      "title": "Prevent credential regression",
+      "description": "Add the exact line .env to .gitignore so local secrets are not recommitted.",
+      "points": 15,
+      "checks": [
+        {
+          "type": "file_contains_line",
+          "path": ".gitignore",
+          "value": ".env"
+        }
+      ]
+    },
+    {
+      "id": "harden-release-workflow",
+      "title": "Harden the release workflow",
+      "description": "Pin checkout to a full commit SHA and replace the pipe-to-shell installer with the repository's reviewed installer.",
+      "points": 35,
+      "checks": [
+        {
+          "type": "file_matches",
+          "path": ".github/workflows/release.yml",
+          "pattern": "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        },
+        {
+          "type": "file_not_matches",
+          "path": ".github/workflows/release.yml",
+          "pattern": "\\|\\s*(?:ba)?sh\\b"
+        },
+        {
+          "type": "file_matches",
+          "path": ".github/workflows/release.yml",
+          "pattern": "run:\\s*bash\\s+\\./scripts/install-tool\\.sh"
+        }
+      ]
+    },
+    {
+      "id": "record-remediation",
+      "title": "Record an auditable remediation",
+      "description": "Commit all remediation changes and leave the repository clean.",
+      "points": 25,
+      "checks": [
+        {
+          "type": "git_head_advanced"
+        },
+        {
+          "type": "git_clean"
+        }
+      ]
+    }
+  ],
+  "debrief": [
+    "Secrets must be removed from tracked content and rotated in the real provider; deleting a file alone does not erase earlier Git history.",
+    "Mutable action tags can change underneath a pipeline, while a full commit SHA makes the dependency reviewable and reproducible.",
+    "Piping network responses directly into a shell crosses a trust boundary without an integrity check.",
+    "A clean remediation commit provides evidence that responders and reviewers can audit."
+  ]
+}
