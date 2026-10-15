@@ -21,7 +21,7 @@ from gitquest.interfaces.terminal_ui import (
     create_menu_table
 )
 from gitquest.persistence.json_save import load_player, reset_progress, save_player
-from gitquest.runtime.workspace import create_sandbox
+from gitquest.runtime.workspace import WorkspaceSafetyError, create_sandbox
 
 
 class GameEngine:
@@ -408,7 +408,12 @@ class GameEngine:
 
         print_story(mission["story"])
 
-        sandbox_path = create_sandbox(mission["id"])
+        try:
+            sandbox_path = create_sandbox(mission["id"])
+        except WorkspaceSafetyError as error:
+            print_error("GitQuest could not safely prepare the mission workspace.")
+            print_warning(str(error))
+            return
         absolute_path = sandbox_path.resolve()
 
         print_info("A clean sandbox folder has been created for this mission.")

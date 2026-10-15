@@ -18,6 +18,9 @@ This project is being built as both a learning tool and a portfolio project.
 * Git command quiz missions
 * Flexible answer checking for realistic Git commands
 * Real Git sandbox missions
+* Safety-marked disposable mission workspaces
+* `gitquest doctor` capability diagnostics
+* Lite, Standard, and Full runtime profiles for gradual DevSecOps expansion
 * Local JSON save system
 * Unlockable Git commands
 * `.gitignore` for virtual environments, cache files, save data, and sandbox folders
@@ -51,13 +54,15 @@ git init
 
 The game checks the sandbox folder to confirm whether the task was completed successfully.
 
-Sandbox folders are created locally inside:
+Sandbox folders are created locally inside a dedicated managed directory:
 
 ```text
-sandboxes/
+sandboxes/.gitquest/
 ```
 
-The `sandboxes/` folder is ignored by Git so practice repositories are not pushed to GitHub.
+GitQuest only resets workspaces containing its own safety marker. It refuses path traversal,
+symbolic-link workspaces, and unmarked directories. The entire `sandboxes/` folder is ignored by
+Git so practice repositories are not pushed to GitHub.
 
 ---
 
@@ -175,11 +180,35 @@ python -m pip install -e ".[dev]"
 gitquest
 ```
 
+The explicit form is also available:
+
+```bash
+gitquest play
+```
+
 You can also run the installed package directly:
 
 ```bash
 python -m gitquest
 ```
+
+### 5. Check Your Environment
+
+Run the built-in diagnostics before starting missions:
+
+```bash
+gitquest doctor
+```
+
+For CI scripts or other automation, request JSON output:
+
+```bash
+gitquest doctor --json
+```
+
+The current campaign uses the **Lite** profile, which needs only Python and Git. Standard and Full
+list optional free, open-source tools planned for later DevSecOps missions; missing tools do not
+prevent the Lite campaign from running.
 
 ---
 
@@ -274,6 +303,9 @@ If the file does not exist, GitQuest creates it automatically when progress is s
 * [x] Add `.gitignore`
 * [x] Add local data folder placeholder
 * [x] Add real Git sandbox mission support
+* [x] Add safety-marked disposable workspaces
+* [x] Add environment diagnostics and runtime profiles
+* [x] Add the first unit and integration test suite
 
 ### Planned
 
@@ -283,7 +315,7 @@ If the file does not exist, GitQuest creates it automatically when progress is s
 * [ ] Add merge conflict missions
 * [ ] Add remote repository missions
 * [ ] Add SQLite-based SQL learning path
-* [ ] Add tests
+* [ ] Add scenario-pack validation and security-tool contract tests
 
 ---
 
@@ -303,6 +335,9 @@ This project demonstrates:
 * Modern Python packaging and dependency management with `pyproject.toml`
 * User interface improvements with Rich
 * Running and validating real Git commands from Python
+* Defensive filesystem handling and safe disposable environments
+* Capability detection for progressive DevSecOps tooling
+* Automated unit and integration testing
 * Iterative feature development
 
 ---
