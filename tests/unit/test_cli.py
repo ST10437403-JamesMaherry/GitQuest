@@ -53,6 +53,13 @@ class CliTests(unittest.TestCase):
         self.assertEqual(main(["scenario", "list"]), 0)
         render_mock.assert_called_once_with(())
 
+    @patch("gitquest.cli.serve_web")
+    def test_web_command_starts_local_interface(self, serve_web_mock):
+        serve_web_mock.return_value = 0
+
+        self.assertEqual(main(["web", "--port", "8765", "--no-open"]), 0)
+        serve_web_mock.assert_called_once_with(port=8765, open_browser=False)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,6 +11,9 @@ Run the dependency-free test suite from the repository root:
 python -m unittest discover -s tests -v
 ```
 
+The browser integration tests bind an ephemeral localhost port. Run them in an environment that
+allows loopback sockets.
+
 If the optional development dependencies are installed, `pytest` can run the same tests:
 
 ```bash

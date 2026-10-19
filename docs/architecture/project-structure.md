@@ -9,7 +9,8 @@ gitquest/
 |   |-- runtime/         # Disposable workspace lifecycle
 |   |-- adapters/        # Git and future security-tool integrations
 |   |-- persistence/     # Progress and evidence storage
-|   |-- interfaces/      # Terminal and future user interfaces
+|   |-- interfaces/      # Terminal and localhost HTTP adapters
+|   |-- web/             # Packaged browser UI assets
 |   `-- reporting/       # Evidence and human-readable report exports
 |-- scenarios/           # Versioned mission packs and fixtures
 |-- policies/            # Policy-as-code used by scenarios and CI
@@ -24,6 +25,10 @@ The domain must not import terminal UI, filesystem, subprocess, database, or sca
 Application services coordinate work through runtime, adapter, persistence, and interface
 boundaries. External tools are wrapped by adapters so their output can later be normalized
 into evidence without leaking tool-specific details across the codebase.
+
+Both the terminal CLI and browser console call the same application services. The local HTTP
+adapter owns routing and response security, while browser assets contain presentation behavior only;
+neither interface reimplements scenario scoring or workspace rules.
 
 ## Transitional modules
 

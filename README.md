@@ -24,6 +24,7 @@ This project is being built as both a learning tool and a portfolio project.
 * Data-driven security scenario packs with declarative scoring
 * Supply Chain Siege incident-response scenario
 * Markdown and JSON evidence reports for portfolio demonstrations
+* Local browser operations console powered by the same scenario engine
 * Local JSON save system
 * Unlockable Git commands
 * `.gitignore` for virtual environments, cache files, save data, and sandbox folders
@@ -88,6 +89,8 @@ Future improvements include:
 
 * Python
 * Rich terminal UI
+* Python standard-library HTTP server
+* Vanilla HTML, CSS, and JavaScript
 * JSON for local save data
 * Git and GitHub
 * Modern `pyproject.toml` packaging
@@ -107,7 +110,8 @@ gitquest/
 |   |-- runtime/         # Disposable mission workspaces
 |   |-- adapters/        # Git and future security-tool integrations
 |   |-- persistence/     # Progress and future evidence storage
-|   |-- interfaces/      # Terminal presentation
+|   |-- interfaces/      # Terminal and local HTTP presentation
+|   |-- web/             # Dependency-free browser assets
 |   `-- reporting/       # Future evidence reports
 |-- scenarios/           # Versioned security scenario packs and fixtures
 |-- policies/            # Future policy-as-code checks
@@ -238,6 +242,27 @@ gitquest scenario verify supply-chain-siege
 Verification scores the response out of 100 and writes portfolio-safe Markdown and JSON reports to
 `artifacts/reports/`. Starting the scenario again safely resets only that marked scenario workspace.
 
+### 7. Launch the Browser Console
+
+Start the local operations console:
+
+```bash
+gitquest web
+```
+
+GitQuest opens `http://127.0.0.1:8000/` in your browser. The dashboard lists scenario packs,
+initializes disposable labs, verifies remediations, displays control-level feedback, and shows the
+generated evidence paths. It uses the same application services as the terminal interface.
+
+To select another local port or prevent automatic browser opening:
+
+```bash
+gitquest web --port 8765 --no-open
+```
+
+The server binds only to localhost, loads no third-party assets, sends no telemetry, and requires no
+JavaScript build tool or paid hosting service.
+
 ---
 
 ## How to Play
@@ -337,6 +362,8 @@ If the file does not exist, GitQuest creates it automatically when progress is s
 * [x] Add validated data-driven scenario manifests
 * [x] Add the Supply Chain Siege incident-response scenario
 * [x] Add scored Markdown and JSON evidence reports
+* [x] Add a localhost-only browser operations console
+* [x] Add browser API integration tests and security headers
 
 ### Planned
 
@@ -372,6 +399,8 @@ This project demonstrates:
 * Automated unit and integration testing
 * Schema validation and declarative security controls
 * Reproducible incident-response labs and evidence reporting
+* Shared application services across terminal and browser interfaces
+* Secure local API design without third-party web dependencies
 * Iterative feature development
 
 ---

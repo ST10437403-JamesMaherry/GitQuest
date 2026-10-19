@@ -23,6 +23,7 @@ from gitquest.interfaces.scenario_ui import (
     render_scenario_result,
     render_scenario_started,
 )
+from gitquest.interfaces.web_app import serve_web
 from gitquest.reporting.incident_report import write_incident_reports
 from gitquest.runtime.workspace import WorkspaceSafetyError
 
@@ -76,6 +77,22 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         dest="json_output",
         help="Print the verification result as JSON.",
+    )
+
+    web = commands.add_parser(
+        "web",
+        help="Launch the local GitQuest browser interface.",
+    )
+    web.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Localhost port to use (default: 8000).",
+    )
+    web.add_argument(
+        "--no-open",
+        action="store_true",
+        help="Start the server without opening the browser automatically.",
     )
     return parser
 
@@ -132,6 +149,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     if args.command == "scenario":
         return _run_scenario_command(args)
+
+    if args.command == "web":
+        try:
+            return serve_web(port=args.port, open_browser=not args.no_open)
+        except (OSError, ValueError) as error:
+            print(f"GitQuest web error: {error}", file=sys.stderr)
+            return 2
 
     GameEngine().start()
     return 0
