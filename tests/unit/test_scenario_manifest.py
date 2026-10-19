@@ -9,9 +9,7 @@ from gitquest.domain.scenario import ScenarioManifest, ScenarioManifestError
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 SCENARIO_ROOT = REPOSITORY_ROOT / "scenarios"
-MANIFEST_PATH = (
-    SCENARIO_ROOT / "supply_chain" / "supply-chain-siege" / "scenario.json"
-)
+MANIFEST_PATH = SCENARIO_ROOT / "supply_chain" / "supply-chain-siege" / "scenario.json"
 
 
 class ScenarioManifestTests(unittest.TestCase):

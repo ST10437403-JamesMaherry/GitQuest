@@ -12,7 +12,7 @@ def save_player(player):
         "name": player.name,
         "level": player.level,
         "xp": player.xp,
-        "completed_missions": player.completed_missions
+        "completed_missions": player.completed_missions,
     }
 
     SAVE_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -38,8 +38,9 @@ def load_player():
         name=data["name"],
         level=data["level"],
         xp=data["xp"],
-        completed_missions=data["completed_missions"]
+        completed_missions=data["completed_missions"],
     )
+
 
 def reset_progress():
     """

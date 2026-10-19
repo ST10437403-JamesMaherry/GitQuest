@@ -1,410 +1,444 @@
-# GitQuest: The Version Control Adventure
+<p align="center">
+  <img src="./GitQuest%20Mountain%20Commit%20Logo.png" alt="GitQuest" width="520">
+</p>
 
-**GitQuest** is a terminal-based Python learning game that helps developers practice Git commands in a fun, interactive, and story-driven way.
+# GitQuest
 
-Players complete missions, unlock commands, earn XP, level up, explore mission areas, and complete real Git challenges inside sandbox folders.
+**Break it. Fix it. Prove it.**
 
-This project is being built as both a learning tool and a portfolio project.
+GitQuest is a free, local-first DevSecOps incident simulator. Players inherit a compromised
+repository, investigate the failure, repair the delivery controls, and generate evidence that shows
+what changed and why the incident is contained.
 
----
+The project is deliberately more than a command quiz. New scenarios are scored from real repository
+state so a successful result can be inspected, repeated, and discussed in a portfolio interview.
 
-## Current Features
+## Why this project stands out
 
-* Terminal-based gameplay
-* Rich terminal UI with styled menus, panels, and tables
-* Player name creation
-* XP and leveling system
-* Mission map with different learning areas
-* Git command quiz missions
-* Flexible answer checking for realistic Git commands
-* Real Git sandbox missions
-* Safety-marked disposable mission workspaces
-* `gitquest doctor` capability diagnostics
-* Lite, Standard, and Full runtime profiles for gradual DevSecOps expansion
-* Data-driven security scenario packs with declarative scoring
-* Supply Chain Siege incident-response scenario
-* Markdown and JSON evidence reports for portfolio demonstrations
-* Local browser operations console powered by the same scenario engine
-* Local JSON save system
-* Unlockable Git commands
-* `.gitignore` for virtual environments, cache files, save data, and sandbox folders
+- **Real remediation:** players work in disposable Git repositories instead of selecting answers.
+- **Evidence-backed scoring:** objectives total 100 points and produce Markdown plus JSON reports.
+- **Security-conscious runtime:** managed workspaces use safety markers, path containment, and
+  symlink defenses.
+- **Two interfaces, one engine:** the terminal and browser console call the same application
+  services.
+- **Zero required cloud cost:** the Lite campaign needs only Python and Git and runs locally.
+- **Portfolio-grade delivery:** automated tests, linting, package builds, pinned GitHub Actions, and
+  Dependabot are part of the product story.
 
----
+## Current release: v0.4
 
-## Mission Areas
+The current playable vertical slice is **Supply Chain Siege**. It seeds an intentionally unsafe,
+offline repository and asks the player to:
 
-Current and planned mission areas include:
+1. remove an exposed fake credential from the current tree;
+2. pin a third-party workflow action to an immutable commit;
+3. harden the release script against unsafe shell execution; and
+4. create a remediation commit that records the response.
 
-* Git Basics
-* Branching Forest
-* Merge Conflict Dungeon
-* Remote Repository Citadel
+Verification scores the resulting repository and writes portfolio-safe reports without copying
+secret values or file contents.
 
-Some areas may be locked until the player reaches a higher level.
+### Implemented
 
----
+- Legacy Git learning campaign with XP, levels, quizzes, and sandbox missions
+- Capability diagnostics through Lite, Standard, and Full runtime profiles
+- Validated, versioned JSON scenario manifests
+- Safety-marked disposable scenario workspaces
+- Deterministic Git and file-state checks
+- Supply Chain Siege incident scenario
+- Markdown and JSON incident evidence reports
+- Terminal workflow and localhost-only browser console
+- Monochrome, responsive browser interface using the GitQuest logo
+- Unit and integration test suite
+- Make-based local workflow
+- GitHub Actions CI and weekly Dependabot updates
 
-## Real Git Sandbox Challenges
+## Quick start
 
-GitQuest includes sandbox missions where the game creates a temporary practice folder.
+### Requirements
 
-The player then runs real Git commands inside that folder.
+- Python 3.9 or newer
+- Git
+- GNU Make for the shortcut commands (preinstalled on macOS and most Linux systems)
 
-Example:
+No cloud account, payment method, Node.js toolchain, container runtime, or external API is required
+for the current Lite scenario.
 
-```bash
-git init
-```
+### First-time setup on macOS or Linux
 
-The game checks the sandbox folder to confirm whether the task was completed successfully.
+Clone the repository, create one virtual environment, activate it, and install the application with
+its development tools:
 
-Sandbox folders are created locally inside a dedicated managed directory:
+    git clone https://github.com/ST10437403-JamesMaherry/GitQuest.git
+    cd GitQuest
+    python3 -m venv .venv
+    source .venv/bin/activate
+    make install-dev PYTHON=python
 
-```text
-sandboxes/.gitquest/
-```
+Confirm that the installation works:
 
-GitQuest only resets workspaces containing its own safety marker. It refuses path traversal,
-symbolic-link workspaces, and unmarked directories. The entire `sandboxes/` folder is ignored by
-Git so practice repositories are not pushed to GitHub.
+    gitquest --version
+    make doctor PYTHON=python
 
----
+The installation step is normally required only after cloning, after deleting the virtual
+environment, or after pulling changes to the dependencies in <code>pyproject.toml</code>.
 
-## Planned Features
+### First-time setup on Windows PowerShell
 
-Future improvements include:
+Create and activate the environment, then install the project:
 
-* More real Git sandbox missions
-* Create your first commit challenge
-* Branch creation challenges
-* Merge conflict missions
-* Remote repository and GitHub missions
-* More UI polish
-* SQLite-based SQL learning path
-* Automated tests
+    git clone https://github.com/ST10437403-JamesMaherry/GitQuest.git
+    cd GitQuest
+    python -m venv .venv
+    .venv\Scripts\Activate.ps1
+    python -m pip install -e ".[dev]"
 
----
+Confirm that the installation works:
 
-## Tech Stack
+    gitquest --version
+    python -m gitquest doctor
 
-* Python
-* Rich terminal UI
-* Python standard-library HTTP server
-* Vanilla HTML, CSS, and JavaScript
-* JSON for local save data
-* Git and GitHub
-* Modern `pyproject.toml` packaging
+GNU Make is optional on Windows. The direct <code>python -m gitquest</code> commands work from
+PowerShell; Make can also be used from WSL or Git Bash.
 
----
+### Every time you return to the project
 
-## Project Structure
+Open a terminal in the repository and reactivate the same virtual environment.
 
-```text
-gitquest/
-|-- pyproject.toml
-|-- README.md
-|-- requirements.txt
-|-- src/gitquest/
-|   |-- application/     # Game and mission orchestration
-|   |-- domain/          # Core rules, player model, and current missions
-|   |-- runtime/         # Disposable mission workspaces
-|   |-- adapters/        # Git and future security-tool integrations
-|   |-- persistence/     # Progress and future evidence storage
-|   |-- interfaces/      # Terminal and local HTTP presentation
-|   |-- web/             # Dependency-free browser assets
-|   `-- reporting/       # Future evidence reports
-|-- scenarios/           # Versioned security scenario packs and fixtures
-|-- policies/            # Future policy-as-code checks
-|-- tests/               # Unit, contract, integration, and scenario tests
-|-- docs/                # Architecture, ADRs, and threat models
-|-- data/                 # Local progress data
-|-- artifacts/            # Generated local evidence reports
-`-- sandboxes/            # Generated practice repositories
-```
+On macOS or Linux:
 
-Notes:
+    cd /path/to/GitQuest
+    source .venv/bin/activate
 
-* The Python package uses a `src/` layout and is installed as the `gitquest` command.
-* `data/progress.json` is created locally when the player saves progress.
-* `data/progress.json` is ignored by Git.
-* `sandboxes/` is created locally for real Git practice missions.
-* `sandboxes/` is ignored by Git.
-* See `docs/architecture/project-structure.md` for package responsibilities and dependency direction.
+On Windows PowerShell:
 
----
+    cd C:\path\to\GitQuest
+    .venv\Scripts\Activate.ps1
 
-## Getting Started
+You should now see <code>(.venv)</code> at the beginning of the terminal prompt.
 
-### 1. Clone the Repository
+### Start the browser game
 
-```bash
-git clone https://github.com/ST10437403-JamesMaherry/GitQuest.git
-cd GitQuest
-```
+With the virtual environment active:
 
----
+    make web PYTHON=python
 
-### 2. Create a Virtual Environment
+GitQuest opens <http://127.0.0.1:8000/>. If it does not open automatically, visit that address
+manually. Use another port when 8000 is occupied:
 
-On macOS/Linux:
+    make web PYTHON=python PORT=8765
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
+Stop the server with <kbd>Ctrl</kbd>+<kbd>C</kbd>.
 
-On Windows:
+Without Make, use:
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
+    python -m gitquest web
+    python -m gitquest web --port 8765
+    python -m gitquest web --no-open
 
-When the virtual environment is active, the terminal should show something like:
+### Start the terminal game
 
-```text
-(.venv)
-```
+With Make:
 
----
+    make run PYTHON=python
 
-### 3. Install Dependencies
+Without Make:
 
-```bash
-python -m pip install -e .
-```
+    python -m gitquest play
 
-For development tools such as pytest and Ruff:
+The installed console command is equivalent:
 
-```bash
-python -m pip install -e ".[dev]"
-```
+    gitquest play
 
----
+### Minimal installation for players
 
-### 4. Run the Game
+If you only want to play and do not need Ruff, pytest, or the packaging tools:
 
-```bash
-gitquest
-```
+    python -m pip install -e .
+    python -m gitquest web
 
-The explicit form is also available:
+## Play Supply Chain Siege
 
-```bash
-gitquest play
-```
+Check the local runtime and inspect the available scenarios:
 
-You can also run the installed package directly:
+    make doctor PYTHON=python
+    make scenarios PYTHON=python
 
-```bash
-python -m gitquest
-```
+Create a fresh incident workspace:
 
-### 5. Check Your Environment
+    make scenario-start PYTHON=python
 
-Run the built-in diagnostics before starting missions:
+GitQuest prints the managed workspace path. Read its <code>INCIDENT.md</code>, investigate the
+repository, make the remediation, and verify it:
 
-```bash
-gitquest doctor
-```
+    make scenario-verify PYTHON=python
 
-For CI scripts or other automation, request JSON output:
+The default scenario can be overridden:
 
-```bash
-gitquest doctor --json
-```
+    make scenario-start PYTHON=python SCENARIO=another-scenario-id
 
-The current campaign uses the **Lite** profile, which needs only Python and Git. Standard and Full
-list optional free, open-source tools planned for later DevSecOps missions; missing tools do not
-prevent the Lite campaign from running.
+Starting a scenario again resets only its GitQuest-marked workspace. Personal repositories and
+unmarked directories are rejected by the cleanup guard.
 
-### 6. Run the Security Scenario
+Generated incident reports are written beneath:
 
-List the available scenario packs:
+    artifacts/reports/
 
-```bash
-gitquest scenario list
-```
+Generated practice repositories are written beneath:
 
-Create a fresh copy of the first incident repository:
+    sandboxes/.gitquest/
 
-```bash
-gitquest scenario start supply-chain-siege
-```
+Both locations are ignored by Git.
 
-GitQuest prints the disposable workspace path and the objectives. Read `INCIDENT.md` inside that
-workspace, perform the Git and workflow remediation, and then run:
+## Complete local workflow
 
-```bash
-gitquest scenario verify supply-chain-siege
-```
+A typical development or portfolio-demo session is:
 
-Verification scores the response out of 100 and writes portfolio-safe Markdown and JSON reports to
-`artifacts/reports/`. Starting the scenario again safely resets only that marked scenario workspace.
+    source .venv/bin/activate
+    make doctor PYTHON=python
+    make scenarios PYTHON=python
+    make scenario-start PYTHON=python
+    make web PYTHON=python
 
-### 7. Launch the Browser Console
+After editing the generated incident repository, stop the browser server if necessary and verify the
+remediation:
 
-Start the local operations console:
+    make scenario-verify PYTHON=python
 
-```bash
-gitquest web
-```
+Before committing project changes, run:
 
-GitQuest opens `http://127.0.0.1:8000/` in your browser. The dashboard lists scenario packs,
-initializes disposable labs, verifies remediations, displays control-level feedback, and shows the
-generated evidence paths. It uses the same application services as the terminal interface.
+    make ci PYTHON=python
 
-To select another local port or prevent automatic browser opening:
+Then inspect exactly what will be committed:
 
-```bash
-gitquest web --port 8765 --no-open
-```
+    git status
+    git diff
 
-The server binds only to localhost, loads no third-party assets, sends no telemetry, and requires no
-JavaScript build tool or paid hosting service.
+## Make commands
 
----
+Run <code>make</code> or <code>make help</code> to see the local workflow.
 
-## How to Play
+| Command | Purpose |
+| --- | --- |
+| <code>make install</code> | Install the application into the active Python environment |
+| <code>make install-dev</code> | Install the app plus free testing, linting, and build tools |
+| <code>make run</code> | Start the terminal campaign |
+| <code>make web</code> | Start the localhost browser console |
+| <code>make doctor</code> | Display local runtime capabilities |
+| <code>make scenarios</code> | List scenario packs |
+| <code>make scenario-start</code> | Initialize the selected incident |
+| <code>make scenario-verify</code> | Score the selected remediation |
+| <code>make test</code> | Run the dependency-free unittest suite |
+| <code>make lint</code> | Run Ruff static checks |
+| <code>make format-check</code> | Check Python formatting |
+| <code>make build</code> | Build the source and wheel distributions |
+| <code>make ci</code> | Run the complete local CI quality gate |
 
-When the game starts, enter your developer name.
+<code>PYTHON</code>, <code>PORT</code>, and <code>SCENARIO</code> are overridable Make variables. If
+your virtual environment is activated, use <code>PYTHON=python</code> as shown above.
 
-You can then choose from the main menu:
+## Command-line reference
 
-```text
-1. Open mission map
-2. View player stats
-3. View learned commands
-4. Reset progress
-5. Save and exit
-```
+    gitquest                         Start the legacy terminal campaign
+    gitquest play                    Start the legacy terminal campaign explicitly
+    gitquest doctor                  Show runtime capability checks
+    gitquest doctor --json           Emit machine-readable diagnostics
+    gitquest scenario list           List installed incident scenarios
+    gitquest scenario start ID       Create or reset a managed scenario workspace
+    gitquest scenario verify ID      Score a remediation and write reports
+    gitquest scenario verify ID --json
+                                     Emit the verification result as JSON
+    gitquest web                     Start the browser console on port 8000
+    gitquest web --port 8765         Use a different local port
+    gitquest web --no-open           Do not open a browser automatically
 
-Each mission teaches or tests a Git command.
+## Architecture
 
-Some missions are quiz-based. Others create real sandbox folders where you must run actual Git commands.
+    Browser console --+
+                      +--> application services --> domain rules
+    Terminal CLI -----+             |
+                                    +--> managed workspace runtime
+                                    +--> Git and tool adapters
+                                    +--> evidence reporting
 
----
+The domain contains scenario and scoring rules but does not know about HTTP, Rich, subprocesses, or
+filesystem cleanup. Both interfaces reuse the same catalog, runtime, verifier, and reporting
+services.
 
-## Example Commands Covered
+    gitquest/
+    |-- Makefile                    # Local developer and player shortcuts
+    |-- pyproject.toml              # Package metadata and dependency policy
+    |-- src/gitquest/
+    |   |-- application/            # Use cases and orchestration
+    |   |-- domain/                 # Pure mission, scenario, and scoring rules
+    |   |-- runtime/                # Safe disposable workspace lifecycle
+    |   |-- adapters/               # Git and future security-tool integrations
+    |   |-- persistence/            # Local player progress
+    |   |-- reporting/              # Evidence report generation
+    |   |-- interfaces/             # Terminal and localhost HTTP adapters
+    |   +-- web/                    # Dependency-free browser assets
+    |-- scenarios/                  # Versioned incident packs and fixtures
+    |-- policies/                   # Future policy-as-code controls
+    |-- tests/                      # Unit, contract, integration, scenario tests
+    |-- docs/                       # Architecture, decisions, threats, roadmap
+    |-- .github/workflows/ci.yml    # Read-only CI quality gate
+    |-- .github/dependabot.yml      # Python and Actions update policy
+    |-- artifacts/                  # Generated evidence; ignored by Git
+    +-- sandboxes/                  # Generated practice repositories; ignored by Git
 
-GitQuest teaches commands such as:
+More detail is available in
+[docs/architecture/project-structure.md](docs/architecture/project-structure.md).
 
-```bash
-git init
-git status
-git add .
-git add --all
-git commit -m "message"
-git log
-git branch
-git switch -c feature/new-feature
-git switch feature/login
-git checkout -b feature/new-feature
-```
+## Security model
 
-More commands will be added as the game grows.
+GitQuest intentionally handles disposable repositories, so safe execution is a product feature:
 
----
+- the HTTP server binds to <code>127.0.0.1</code> and rejects unexpected Host headers;
+- mutating browser requests require a custom local verification header;
+- static assets are local and the Content Security Policy blocks third-party execution;
+- dynamic browser content is inserted through text APIs rather than HTML injection;
+- scenario IDs, manifest paths, regexes, and objective totals are validated;
+- workspaces must remain beneath a managed root and carry a GitQuest safety marker;
+- symlinked workspace or fixture entries are rejected;
+- Git commands use argument arrays, timeouts, captured output, and disabled prompts;
+- fixtures contain only inert, explicitly fake credentials; and
+- evidence reports record normalized outcomes, not credential values or source contents.
 
-## Virtual Environment Notes
+This development server is not a multi-user service and must not be exposed to a network.
 
-This project uses a Python virtual environment called `.venv`.
+See [the browser threat model](docs/threat-model/browser-interface.md) and
+[the runtime threat model](docs/threat-model/scenario-runtime.md).
 
-The `.venv` folder is not pushed to GitHub because it is local to each computer.
+## Quality and dependency automation
 
-To activate it on macOS/Linux:
+GitHub Actions runs <code>make ci</code> on pushes to <code>main</code>, pull requests, and manual
+dispatches. The job tests Python 3.9 and 3.13, uses read-only repository permissions, disables
+persisted checkout credentials, applies a ten-minute timeout, and pins actions to full commit SHAs.
 
-```bash
-source .venv/bin/activate
-```
+Dependabot checks the Python and GitHub Actions ecosystems every Monday. Production Python
+dependencies, development dependencies, and Actions updates are grouped separately so changes stay
+reviewable. Dependabot opens pull requests; it does not merge or deploy anything automatically.
 
-To deactivate it:
+Run the same gate locally before committing:
 
-```bash
-deactivate
-```
+    make ci PYTHON=python
 
-You do not need to deactivate it every time, but it is good practice when you are finished working on the project.
+## Troubleshooting
 
----
+### The <code>gitquest</code> command is not found
 
-## Local Save Data
+Activate the virtual environment and reinstall the project from the repository root:
 
-Player progress is stored locally in:
+    source .venv/bin/activate
+    python -m pip install -e .
 
-```text
-data/progress.json
-```
+You can always bypass the console entry point with:
 
-This file is ignored by Git so each player has their own save data.
+    python -m gitquest web
 
-If the file does not exist, GitQuest creates it automatically when progress is saved.
+On Windows, activate with <code>.venv\Scripts\Activate.ps1</code> instead.
 
----
+### Pip says that <code>-e</code> requires an argument
 
-## Development Roadmap
+Editable installation needs the current-directory argument:
 
-### Completed
+    python -m pip install -e .
 
-* [x] Create first playable prototype
-* [x] Add player system
-* [x] Add XP and levels
-* [x] Add JSON save system
-* [x] Add flexible answer checking
-* [x] Add mission map
-* [x] Add Rich terminal UI
-* [x] Add `.gitignore`
-* [x] Add local data folder placeholder
-* [x] Add real Git sandbox mission support
-* [x] Add safety-marked disposable workspaces
-* [x] Add environment diagnostics and runtime profiles
-* [x] Add the first unit and integration test suite
-* [x] Add validated data-driven scenario manifests
-* [x] Add the Supply Chain Siege incident-response scenario
-* [x] Add scored Markdown and JSON evidence reports
-* [x] Add a localhost-only browser operations console
-* [x] Add browser API integration tests and security headers
+Do not omit the final period.
 
-### Planned
+### Python reports <code>No module named python</code>
 
-* [ ] Add more sandbox missions
-* [ ] Add first commit sandbox challenge
-* [ ] Add branch sandbox challenge
-* [ ] Add merge conflict missions
-* [ ] Add remote repository missions
-* [ ] Add SQLite-based SQL learning path
-* [ ] Add security-tool contract tests
-* [ ] Add pipeline and cloud-native scenario packs
+Use Python once before <code>-m</code>:
 
----
+    python -m pip install -e .
 
-## Portfolio Goals
+Do not run <code>python -m python -m pip</code>.
 
-This project demonstrates:
+### Pip cannot install the editable project
 
-* Python fundamentals
-* Clean project structure
-* Terminal application design
-* Git and GitHub workflow
-* Branch-based development
-* Pull request workflow
-* JSON file handling
-* Local save data
-* Virtual environment usage
-* Modern Python packaging and dependency management with `pyproject.toml`
-* User interface improvements with Rich
-* Running and validating real Git commands from Python
-* Defensive filesystem handling and safe disposable environments
-* Capability detection for progressive DevSecOps tooling
-* Automated unit and integration testing
-* Schema validation and declarative security controls
-* Reproducible incident-response labs and evidence reporting
-* Shared application services across terminal and browser interfaces
-* Secure local API design without third-party web dependencies
-* Iterative feature development
+Upgrade pip inside the active virtual environment, then retry:
 
----
+    python -m pip install --upgrade pip
+    python -m pip install -e ".[dev]"
+
+Also confirm that the command is being run from the directory containing
+<code>pyproject.toml</code>.
+
+### Port 8000 is already in use
+
+Choose another local port:
+
+    make web PYTHON=python PORT=8765
+
+Or:
+
+    python -m gitquest web --port 8765
+
+### Scenario verification cannot find a workspace
+
+Initialize the scenario before verifying it:
+
+    make scenario-start PYTHON=python
+    make scenario-verify PYTHON=python
+
+### Tests fail while binding a localhost port
+
+The browser integration tests require permission to open an ephemeral loopback socket. Run them in a
+normal local terminal rather than a restricted sandbox:
+
+    make test PYTHON=python
+
+## Product roadmap
+
+### Now: trustworthy Lite foundation
+
+- [x] Safe managed workspaces and runtime diagnostics
+- [x] Data-driven scenario manifests and deterministic scoring
+- [x] First end-to-end supply-chain incident
+- [x] Markdown and JSON evidence
+- [x] Terminal and browser delivery
+- [x] Local/CI parity through Make
+- [x] CI and dependency update automation
+
+### Next: deeper evidence and progression
+
+- [ ] Persist scenario attempts, scores, and evidence metadata in SQLite
+- [ ] Connect incident scenarios to a unified campaign and skill progression model
+- [ ] Add hint tiers, debriefs, prerequisites, and estimated completion time to manifests
+- [ ] Add evidence browsing and export actions to the browser console
+- [ ] Add keyboard/browser end-to-end and accessibility checks
+- [ ] Publish a sample sanitized report for recruiters who do not install the project
+
+### Then: DevSecOps breadth
+
+- [ ] Add a Gitleaks adapter and deterministic secret-history scenario
+- [ ] Add CI workflow policy checks and a Pipeline Fortress campaign
+- [ ] Add SBOM and dependency-risk evidence
+- [ ] Add rootless container build, scan, and signing missions
+- [ ] Add OpenTofu and policy-as-code scenarios
+- [ ] Add an optional local Kubernetes capstone using kind
+
+### Explicitly out of scope for v1
+
+- Paid cloud resources or required cloud accounts
+- A hosted service that executes untrusted player code
+- Real malware, real credentials, or live production targets
+- Multi-user accounts, leaderboards, or social features
+- More command trivia without a verifiable operational outcome
+
+The detailed sequencing and release criteria live in [docs/roadmap.md](docs/roadmap.md).
+
+## Free-tool policy
+
+The core campaign must stay usable after installation without a payment method. Optional later
+profiles may integrate free, open-source tools such as Gitleaks, Trivy, Conftest, Podman, OpenTofu,
+Cosign, kubectl, and kind. Missing optional tools disable only the related scenarios and should
+never block the Lite campaign.
+
+GitHub-hosted automation is a repository convenience, not a runtime dependency. Every important
+quality check also has a local Make target.
 
 ## Author
 
-Built by **James Maherry** as a Python portfolio project and Git learning tool.
+Built by **James Maherry** as a portfolio project focused on cloud engineering, cybersecurity, and
+DevSecOps.

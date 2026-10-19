@@ -32,9 +32,7 @@ def render_scenario_started(manifest: ScenarioManifest, workspace: str) -> None:
     console.print("[bold]Objectives[/bold]")
     for objective in manifest.objectives:
         console.print(f"  • [{objective.points} points] {objective.description}")
-    console.print(
-        f"\nWhen finished, run: [bold]gitquest scenario verify {manifest.id}[/bold]"
-    )
+    console.print(f"\nWhen finished, run: [bold]gitquest scenario verify {manifest.id}[/bold]")
 
 
 def render_scenario_result(result: ScenarioResult, report_paths: tuple[str, str]) -> None:

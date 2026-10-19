@@ -17,6 +17,10 @@ standard-library HTTP adapter calls the existing scenario catalog, workspace run
 reporting services. Static HTML, CSS, and JavaScript are packaged with the Python distribution and
 need no Node.js toolchain or remote CDN.
 
+The product interface uses a high-contrast monochrome system and the packaged GitQuest logo.
+Status is communicated with text and shape rather than color alone, and keyboard focus remains
+visible at every interactive control.
+
 The initial API supports health checks, scenario discovery, scenario detail, lab initialization,
 and remediation verification. Terminal and browser interactions therefore produce the same Git
 state, scores, and evidence reports.

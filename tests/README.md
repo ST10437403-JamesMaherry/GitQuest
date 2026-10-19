@@ -14,8 +14,13 @@ python -m unittest discover -s tests -v
 The browser integration tests bind an ephemeral localhost port. Run them in an environment that
 allows loopback sockets.
 
+The Make shortcut for the dependency-free suite is <code>make test PYTHON=python</code>.
+
 If the optional development dependencies are installed, `pytest` can run the same tests:
 
 ```bash
 pytest
 ```
+
+Run <code>make ci PYTHON=python</code> for the full local quality gate: Ruff static checks, Ruff
+format verification, all tests, and both Python package distributions.

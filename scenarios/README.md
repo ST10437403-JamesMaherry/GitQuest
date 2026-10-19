@@ -20,3 +20,7 @@ Validate all scenario behavior with:
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+The equivalent repository shortcut is <code>make test PYTHON=python</code>. The planned scenario
+sequence and definition of done are documented in
+[`docs/roadmap.md`](../docs/roadmap.md).

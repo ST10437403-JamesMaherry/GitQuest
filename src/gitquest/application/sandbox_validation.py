@@ -43,17 +43,14 @@ def validate_sandbox_mission(mission, sandbox_path):
         # A commit can only exist inside a Git repository.
         # Checking this first gives the player a clearer error message.
         if not is_git_repository(sandbox_path):
-            return False, (
-                "No Git repository was found. "
-                "Start by running: git init"
-            )
+            return False, ("No Git repository was found. Start by running: git init")
 
         if has_commit(sandbox_path):
             return True, "A commit was found in the sandbox repository."
 
         return False, (
             "No commit was found yet. "
-            "Create a file, run git add ., then run git commit -m \"First commit\"."
+            'Create a file, run git add ., then run git commit -m "First commit".'
         )
 
     # Mission type: the player must create a specific branch.
@@ -62,10 +59,7 @@ def validate_sandbox_mission(mission, sandbox_path):
 
         # Again, check for a Git repository first so the feedback is more useful.
         if not is_git_repository(sandbox_path):
-            return False, (
-                "No Git repository was found. "
-                "Start by running: git init"
-            )
+            return False, ("No Git repository was found. Start by running: git init")
 
         if has_branch(sandbox_path, expected_branch):
             return True, f"The expected branch '{expected_branch}' was found."

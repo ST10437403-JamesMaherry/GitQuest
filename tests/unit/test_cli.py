@@ -22,9 +22,7 @@ class CliTests(unittest.TestCase):
     @patch("gitquest.cli.run_doctor")
     def test_doctor_json_is_machine_readable(self, run_doctor_mock):
         run_doctor_mock.return_value = DoctorReport(
-            checks=(
-                DiagnosticCheck("git", "Git", True, ("Lite",), "ready"),
-            )
+            checks=(DiagnosticCheck("git", "Git", True, ("Lite",), "ready"),)
         )
         output = io.StringIO()
 
@@ -36,9 +34,7 @@ class CliTests(unittest.TestCase):
 
     @patch("gitquest.cli.render_doctor_report")
     @patch("gitquest.cli.run_doctor")
-    def test_doctor_returns_nonzero_when_lite_is_not_ready(
-        self, run_doctor_mock, render_mock
-    ):
+    def test_doctor_returns_nonzero_when_lite_is_not_ready(self, run_doctor_mock, render_mock):
         report = Mock(lite_ready=False)
         run_doctor_mock.return_value = report
 

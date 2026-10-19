@@ -33,6 +33,7 @@ ASSET_ROOT = Path(__file__).resolve().parents[1] / "web"
 ASSET_ROUTES = {
     "/": ASSET_ROOT / "index.html",
     "/assets/app.js": ASSET_ROOT / "app.js",
+    "/assets/gitquest-logo.png": ASSET_ROOT / "gitquest-logo.png",
     "/assets/styles.css": ASSET_ROOT / "styles.css",
 }
 MAX_REQUEST_BODY = 1024
@@ -93,9 +94,7 @@ class GitQuestWebApplication:
         self.report_root = report_root
 
     def _report_root(self, manifest: ScenarioManifest) -> Path:
-        return self.report_root or (
-            manifest.source_directory.parents[2] / "artifacts" / "reports"
-        )
+        return self.report_root or (manifest.source_directory.parents[2] / "artifacts" / "reports")
 
     def _scenario(self, scenario_id: str) -> ScenarioManifest:
         return load_scenario(scenario_id, self.scenario_root)
@@ -147,8 +146,8 @@ class GitQuestWebApplication:
                 manifest = self._scenario(scenario_id)
                 result = verify_scenario(manifest, self.workspace_root)
                 workspace_root = self.workspace_root or default_scenario_workspace_root(manifest)
-                workspace_path = (
-                    Path(workspace_root).resolve() / scenario_workspace_name(manifest.id)
+                workspace_path = Path(workspace_root).resolve() / scenario_workspace_name(
+                    manifest.id
                 )
                 markdown_path, json_path = write_incident_reports(
                     result,

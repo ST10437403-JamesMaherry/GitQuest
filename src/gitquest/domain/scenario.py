@@ -35,9 +35,7 @@ def _required_text(data: Dict[str, Any], key: str) -> str:
 
 def _safe_relative_path(value: str) -> str:
     path = PurePosixPath(value)
-    if path.is_absolute() or not path.parts or any(
-        part in ("", ".", "..") for part in path.parts
-    ):
+    if path.is_absolute() or not path.parts or any(part in ("", ".", "..") for part in path.parts):
         raise ScenarioManifestError(f"Scenario check path is not safe: {value}")
     if path.parts[0] in (".git", ".gitquest-workspace"):
         raise ScenarioManifestError(f"Scenario checks cannot inspect internal state: {value}")

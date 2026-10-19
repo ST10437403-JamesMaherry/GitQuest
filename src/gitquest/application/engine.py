@@ -6,7 +6,7 @@ from gitquest.domain.mission_map import (
     MISSION_AREAS,
     get_area_missions,
     count_completed_area_missions,
-    is_area_unlocked
+    is_area_unlocked,
 )
 from gitquest.domain.missions import MISSIONS
 from gitquest.domain.player import Player
@@ -18,7 +18,7 @@ from gitquest.interfaces.terminal_ui import (
     print_warning,
     print_info,
     print_story,
-    create_menu_table
+    create_menu_table,
 )
 from gitquest.persistence.json_save import load_player, reset_progress, save_player
 from gitquest.runtime.workspace import WorkspaceSafetyError, create_sandbox
@@ -56,7 +56,7 @@ class GameEngine:
         """
         print_title(
             "GITQUEST: THE VERSION CONTROL ADVENTURE",
-            "Master Git commands through missions, XP, and developer challenges."
+            "Master Git commands through missions, XP, and developer challenges.",
         )
 
     def load_or_create_player(self):
@@ -186,9 +186,7 @@ class GameEngine:
 
                 # Count how many of those missions the player has completed.
                 completed_missions = count_completed_area_missions(
-                    area_key,
-                    MISSIONS,
-                    self.player.completed_missions
+                    area_key, MISSIONS, self.player.completed_missions
                 )
 
                 # Show whether the area is unlocked based on the player's level.
@@ -198,10 +196,7 @@ class GameEngine:
                     lock_status = f"[red]Locked - Requires level {area['required_level']}[/red]"
 
                 table.add_row(
-                    str(index),
-                    area["name"],
-                    f"{completed_missions}/{total_missions}",
-                    lock_status
+                    str(index), area["name"], f"{completed_missions}/{total_missions}", lock_status
                 )
 
             table.add_row("0", "Back to main menu", "-", "[blue]Return[/blue]")
@@ -269,12 +264,7 @@ class GameEngine:
                 else:
                     status = "[yellow]Incomplete[/yellow]"
 
-                table.add_row(
-                    str(index),
-                    mission["title"],
-                    str(mission["xp"]),
-                    status
-                )
+                table.add_row(str(index), mission["title"], str(mission["xp"]), status)
 
             table.add_row("0", "Back to mission map", "-", "[blue]Return[/blue]")
 
@@ -365,10 +355,7 @@ class GameEngine:
         - No XP is awarded.
         - Progress is not saved again.
         """
-        print_title(
-            f"MISSION {mission['id']}: {mission['title']}",
-            f"Reward: {mission['xp']} XP"
-        )
+        print_title(f"MISSION {mission['id']}: {mission['title']}", f"Reward: {mission['xp']} XP")
 
         # Make it clear to the player that this is only for practice.
         if is_replay:
@@ -398,13 +385,14 @@ class GameEngine:
         - Progress is not saved again.
         """
         print_title(
-            f"SANDBOX MISSION {mission['id']}: {mission['title']}",
-            f"Reward: {mission['xp']} XP"
+            f"SANDBOX MISSION {mission['id']}: {mission['title']}", f"Reward: {mission['xp']} XP"
         )
 
         # Make it clear to the player that this is only for practice.
         if is_replay:
-            print_info("Practice mode: this sandbox mission can be replayed, but no XP will be awarded.")
+            print_info(
+                "Practice mode: this sandbox mission can be replayed, but no XP will be awarded."
+            )
 
         print_story(mission["story"])
 

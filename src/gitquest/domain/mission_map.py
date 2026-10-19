@@ -2,23 +2,23 @@ MISSION_AREAS = {
     "git_basics": {
         "name": "Git Basics",
         "description": "Learn the foundation commands every developer needs.",
-        "required_level": 1
+        "required_level": 1,
     },
     "branching_forest": {
         "name": "Branching Forest",
         "description": "Create, view, and switch between branches safely.",
-        "required_level": 1
+        "required_level": 1,
     },
     "merge_conflict_dungeon": {
         "name": "Merge Conflict Dungeon",
         "description": "Face one of Git's scariest challenges: merge conflicts.",
-        "required_level": 3
+        "required_level": 3,
     },
     "remote_repository_citadel": {
         "name": "Remote Repository Citadel",
         "description": "Learn how to work with GitHub and remote repositories.",
-        "required_level": 4
-    }
+        "required_level": 4,
+    },
 }
 
 

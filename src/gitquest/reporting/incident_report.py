@@ -30,8 +30,7 @@ def _markdown_report(result: ScenarioResult, generated_at: str) -> str:
     for objective in result.objectives:
         status = "PASS" if objective.passed else "NEEDS WORK"
         rows.append(
-            f"| {objective.title} | {status} | "
-            f"{objective.awarded_points}/{objective.points} |"
+            f"| {objective.title} | {status} | {objective.awarded_points}/{objective.points} |"
         )
 
     rows.extend(["", "## Control evidence", ""])

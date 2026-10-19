@@ -232,9 +232,7 @@ def _evaluate_check(
     if check.type == "path_absent":
         passed = target is not None and not target.exists() and not target.is_symlink()
         message = (
-            f"{check.path} is absent."
-            if passed
-            else f"Remove {check.path} from the workspace."
+            f"{check.path} is absent." if passed else f"Remove {check.path} from the workspace."
         )
     elif check.type == "git_path_untracked":
         result = run_git_command(

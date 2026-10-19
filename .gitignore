@@ -5,6 +5,7 @@ env/
 
 #
 *.pdf
+!output/pdf/gitquest-next-level-portfolio-roadmap.pdf
 
 # Python cache files
 __pycache__/

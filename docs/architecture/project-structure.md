@@ -2,6 +2,7 @@
 
 ```text
 gitquest/
+|-- Makefile             # Local commands mirrored by CI
 |-- pyproject.toml
 |-- src/gitquest/
 |   |-- application/     # Use-case orchestration
@@ -10,13 +11,14 @@ gitquest/
 |   |-- adapters/        # Git and future security-tool integrations
 |   |-- persistence/     # Progress and evidence storage
 |   |-- interfaces/      # Terminal and localhost HTTP adapters
-|   |-- web/             # Packaged browser UI assets
+|   |-- web/             # Packaged monochrome browser UI and logo
 |   `-- reporting/       # Evidence and human-readable report exports
 |-- scenarios/           # Versioned mission packs and fixtures
 |-- policies/            # Policy-as-code used by scenarios and CI
 |-- tests/               # Unit, contract, integration, and scenario tests
-|-- docs/                # Architecture, ADRs, and threat models
-`-- .github/workflows/   # Quality, security, scenario, release, and Pages automation
+|-- docs/                # Architecture, ADRs, threats, development guide, roadmap
+|-- .github/workflows/   # Current CI; later security, scenario, and release automation
+`-- .github/dependabot.yml
 ```
 
 ## Dependency direction
@@ -29,6 +31,9 @@ into evidence without leaking tool-specific details across the codebase.
 Both the terminal CLI and browser console call the same application services. The local HTTP
 adapter owns routing and response security, while browser assets contain presentation behavior only;
 neither interface reimplements scenario scoring or workspace rules.
+
+The Makefile is the local automation boundary. GitHub Actions calls the same targets instead of
+duplicating lint, test, or build commands in workflow YAML.
 
 ## Transitional modules
 

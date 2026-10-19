@@ -58,8 +58,14 @@ class WebAppIntegrationTests(unittest.TestCase):
                 with urlopen(base_url + "/", timeout=5) as response:
                     html = response.read().decode("utf-8")
                     self.assertEqual(response.status, 200)
-                    self.assertIn("GitQuest Operations Console", html)
+                    self.assertIn("GitQuest Incident Console", html)
+                    self.assertIn("/assets/gitquest-logo.png", html)
                     self.assertIn("default-src 'self'", response.headers["Content-Security-Policy"])
+
+                with urlopen(base_url + "/assets/gitquest-logo.png", timeout=5) as response:
+                    self.assertEqual(response.status, 200)
+                    self.assertEqual(response.headers["Content-Type"], "image/png")
+                    self.assertTrue(response.read().startswith(b"\x89PNG"))
 
                 status, _, health = read_json(base_url + "/api/health")
                 self.assertEqual(status, 200)

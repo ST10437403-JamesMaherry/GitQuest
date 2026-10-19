@@ -23,13 +23,7 @@ def print_title(title, subtitle=None):
     if subtitle:
         title_text.append(f"\n{subtitle}", style="white")
 
-    console.print(
-        Panel(
-            title_text,
-            border_style="cyan",
-            padding=(1, 2)
-        )
-    )
+    console.print(Panel(title_text, border_style="cyan", padding=(1, 2)))
 
 
 def print_section(title):
@@ -90,14 +84,7 @@ def print_story(message):
     Args:
         message: The story text to display.
     """
-    console.print(
-        Panel(
-            message,
-            title="Story",
-            border_style="magenta",
-            padding=(1, 2)
-        )
-    )
+    console.print(Panel(message, title="Story", border_style="magenta", padding=(1, 2)))
 
 
 def create_menu_table(title):

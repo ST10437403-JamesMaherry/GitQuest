@@ -64,9 +64,9 @@ def ensure_sandbox_root(root: PathLike = SANDBOX_ROOT) -> Path:
 
     if marker.exists() or marker.is_symlink():
         try:
-            marker_is_valid = marker.is_file() and marker.read_text(
-                encoding="utf-8"
-            ) == MARKER_CONTENT
+            marker_is_valid = (
+                marker.is_file() and marker.read_text(encoding="utf-8") == MARKER_CONTENT
+            )
         except OSError as error:
             raise WorkspaceSafetyError(
                 "The GitQuest sandbox root safety marker cannot be read."
@@ -94,9 +94,7 @@ def _remove_managed_workspace(workspace: Path, root: Path) -> None:
 
     marker = workspace / WORKSPACE_MARKER
     try:
-        marker_is_valid = marker.is_file() and marker.read_text(
-            encoding="utf-8"
-        ) == MARKER_CONTENT
+        marker_is_valid = marker.is_file() and marker.read_text(encoding="utf-8") == MARKER_CONTENT
     except OSError as error:
         raise WorkspaceSafetyError(
             f"The workspace safety marker cannot be read: {workspace}"
@@ -146,9 +144,7 @@ def get_managed_workspace(
 
     marker = workspace / WORKSPACE_MARKER
     try:
-        marker_is_valid = marker.is_file() and marker.read_text(
-            encoding="utf-8"
-        ) == MARKER_CONTENT
+        marker_is_valid = marker.is_file() and marker.read_text(encoding="utf-8") == MARKER_CONTENT
     except OSError as error:
         raise WorkspaceSafetyError(
             f"The workspace safety marker cannot be read: {workspace}"

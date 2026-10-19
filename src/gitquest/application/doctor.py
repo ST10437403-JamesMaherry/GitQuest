@@ -47,8 +47,7 @@ class DoctorReport:
         return {
             "lite_ready": self.lite_ready,
             "profiles": {
-                profile: self.profile_ready(profile)
-                for profile in ("Lite", "Standard", "Full")
+                profile: self.profile_ready(profile) for profile in ("Lite", "Standard", "Full")
             },
             "checks": [check.to_dict() for check in self.checks],
         }
