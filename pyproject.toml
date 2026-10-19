@@ -13,7 +13,7 @@ authors = [
     { name = "James Maherry" },
 ]
 dependencies = [
-    "rich>=13.0,<15.0",
+    "rich>=15.0.0,<16.0",
 ]
 
 [project.optional-dependencies]
