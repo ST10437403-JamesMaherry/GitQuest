@@ -11,14 +11,13 @@ class DoctorReportTests(unittest.TestCase):
     def test_profile_readiness_uses_only_relevant_checks(self):
         report = DoctorReport(
             checks=(
-                DiagnosticCheck("git", "Git", True, ("Lite", "Standard"), "ready"),
-                DiagnosticCheck("trivy", "Trivy", False, ("Standard",), "missing"),
+                DiagnosticCheck("git", "Git", True, ("Lite", "Local"), "ready"),
+                DiagnosticCheck("workspace", "Workspace", False, ("Local",), "missing"),
             )
         )
 
         self.assertTrue(report.profile_ready("Lite"))
-        self.assertFalse(report.profile_ready("Standard"))
-        self.assertFalse(report.profile_ready("Full"))
+        self.assertFalse(report.profile_ready("Local"))
 
     @patch("gitquest.application.doctor.check_workspace_access")
     @patch("gitquest.application.doctor.inspect_tool")
@@ -28,9 +27,7 @@ class DoctorReportTests(unittest.TestCase):
         workspace_access_mock.return_value = (True, "workspace ready")
 
         def inspect(name, version_arguments):
-            if name == "git":
-                return ToolInfo(name, "/usr/bin/git", "git version test")
-            return ToolInfo(name, None, None)
+            return ToolInfo(name, "/usr/bin/git", "git version test")
 
         inspect_tool_mock.side_effect = inspect
 
@@ -38,10 +35,9 @@ class DoctorReportTests(unittest.TestCase):
             report = run_doctor(Path(temporary_directory))
 
         self.assertTrue(report.lite_ready)
-        self.assertFalse(report.profile_ready("Standard"))
-        self.assertFalse(report.profile_ready("Full"))
+        self.assertTrue(report.profile_ready("Local"))
         self.assertEqual(report.check("git").detail, "git version test")
-        self.assertEqual(len(report.to_dict()["checks"]), 11)
+        self.assertEqual(len(report.to_dict()["checks"]), 3)
 
 
 if __name__ == "__main__":

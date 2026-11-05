@@ -1,236 +1,97 @@
-"use strict";
+const routes = new Map([
+  ["/", "home"],
+  ["/learn", "learn"],
+  ["/guide", "guide"],
+]);
 
-const state = {
-  scenarios: [],
-  selectedId: null,
-  selected: null,
-  result: null,
-};
+let curriculumLoaded = false;
 
-const elements = {
-  runtimeLabel: document.querySelector("#runtime-label"),
-  scenarioCount: document.querySelector("#scenario-count"),
-  scenarioList: document.querySelector("#scenario-list"),
-  emptyState: document.querySelector("#empty-state"),
-  missionContent: document.querySelector("#mission-content"),
-  missionProfile: document.querySelector("#mission-profile"),
-  missionDifficulty: document.querySelector("#mission-difficulty"),
-  missionCategory: document.querySelector("#mission-category"),
-  missionTitle: document.querySelector("#mission-title"),
-  missionSummary: document.querySelector("#mission-summary"),
-  scoreValue: document.querySelector("#score-value"),
-  startButton: document.querySelector("#start-button"),
-  verifyButton: document.querySelector("#verify-button"),
-  notice: document.querySelector("#notice"),
-  workspacePath: document.querySelector("#workspace-path"),
-  objectiveProgress: document.querySelector("#objective-progress"),
-  objectiveList: document.querySelector("#objective-list"),
-  evidencePanel: document.querySelector("#evidence-panel"),
-  markdownReport: document.querySelector("#markdown-report"),
-  jsonReport: document.querySelector("#json-report"),
-};
-
-async function api(path, options = {}) {
-  const headers = { Accept: "application/json", ...(options.headers || {}) };
-  if (options.method === "POST") {
-    headers["Content-Type"] = "application/json";
-    headers["X-GitQuest-Request"] = "browser-ui";
-  }
-  const response = await fetch(path, { ...options, headers });
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error(payload.error || `Request failed with status ${response.status}.`);
-  }
-  return payload;
+function setRoute(pathname, replace = false) {
+  const viewName = routes.get(pathname) || "not-found";
+  document.querySelectorAll("[data-view]").forEach((view) => {
+    view.hidden = view.dataset.view !== viewName;
+  });
+  document.querySelectorAll("nav a").forEach((link) => {
+    const current = link.getAttribute("href") === pathname;
+    if (current) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+  if (!replace) window.history.pushState({}, "", pathname);
+  document.title = viewName === "home" ? "GitQuest — Learn Git by doing" : `GitQuest — ${viewName}`;
+  document.querySelector("#content").focus({ preventScroll: true });
+  window.scrollTo(0, 0);
+  if (viewName === "learn" && !curriculumLoaded) loadCurriculum();
 }
 
-function setBusy(busy) {
-  elements.startButton.disabled = busy;
-  elements.verifyButton.disabled = busy;
-}
-
-function showNotice(message, tone = "info") {
-  elements.notice.textContent = message;
-  elements.notice.dataset.tone = tone;
-  elements.notice.hidden = false;
-}
-
-function clearNotice() {
-  elements.notice.hidden = true;
-  elements.notice.textContent = "";
-}
-
-function scenarioButton(scenario) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "scenario-item";
-  button.dataset.scenarioId = scenario.id;
-  button.setAttribute("aria-pressed", String(scenario.id === state.selectedId));
-
-  const index = document.createElement("span");
-  index.className = "scenario-index";
-  index.textContent = String(state.scenarios.indexOf(scenario) + 1).padStart(2, "0");
-
-  const copy = document.createElement("span");
+function missionItem(mission) {
+  const item = document.createElement("li");
+  const number = document.createElement("span");
+  number.textContent = String(mission.id).padStart(2, "0");
   const title = document.createElement("strong");
-  title.textContent = scenario.title;
-  const meta = document.createElement("small");
-  meta.textContent = `${scenario.profile} · ${scenario.difficulty}`;
-  copy.append(title, meta);
-
-  button.append(index, copy);
-  button.addEventListener("click", () => selectScenario(scenario.id));
-  return button;
+  title.textContent = mission.title;
+  const command = document.createElement("code");
+  command.textContent = mission.command;
+  item.append(number, title, command);
+  return item;
 }
 
-function renderScenarioList() {
-  elements.scenarioList.replaceChildren(...state.scenarios.map(scenarioButton));
-  elements.scenarioCount.textContent = String(state.scenarios.length);
-}
-
-function objectiveCard(objective, result) {
-  const resultObjective = result?.objectives.find((item) => item.id === objective.id);
+function areaCard(area) {
   const article = document.createElement("article");
-  article.className = "objective-card";
-  if (resultObjective?.passed) article.dataset.status = "passed";
-  if (resultObjective && !resultObjective.passed) article.dataset.status = "pending";
-
-  const marker = document.createElement("span");
-  marker.className = "objective-marker";
-  marker.textContent = resultObjective?.passed ? "✓" : "";
-
-  const copy = document.createElement("div");
-  const titleRow = document.createElement("div");
-  titleRow.className = "objective-title";
-  const title = document.createElement("strong");
-  title.textContent = objective.title;
-  const points = document.createElement("span");
-  points.textContent = `${objective.points} pts`;
-  titleRow.append(title, points);
-
+  article.className = "area";
+  const summary = document.createElement("div");
+  const status = document.createElement("span");
+  status.className = "status";
+  status.textContent = area.status;
+  const heading = document.createElement("h2");
+  heading.textContent = area.name;
   const description = document.createElement("p");
-  description.textContent = objective.description;
-  copy.append(titleRow, description);
+  description.textContent = area.description;
+  summary.append(status, heading, description);
 
-  if (resultObjective && !resultObjective.passed) {
-    const findings = document.createElement("ul");
-    findings.className = "findings";
-    resultObjective.checks
-      .filter((check) => !check.passed)
-      .forEach((check) => {
-        const item = document.createElement("li");
-        item.textContent = check.message;
-        findings.append(item);
-      });
-    copy.append(findings);
+  if (area.missions.length) {
+    const list = document.createElement("ol");
+    list.className = "mission-list";
+    area.missions.forEach((mission) => list.append(missionItem(mission)));
+    article.append(summary, list);
+  } else {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "Lessons will be added in the execution plan.";
+    article.append(summary, empty);
   }
-
-  article.append(marker, copy);
   return article;
 }
 
-function renderMission() {
-  if (!state.selected) return;
-  const scenario = state.selected;
-  elements.emptyState.hidden = true;
-  elements.missionContent.hidden = false;
-  elements.missionProfile.textContent = `${scenario.profile} profile`;
-  elements.missionDifficulty.textContent = scenario.difficulty;
-  elements.missionCategory.textContent = scenario.category.replaceAll("_", " ");
-  elements.missionTitle.textContent = scenario.title;
-  elements.missionSummary.textContent = scenario.summary;
-  elements.scoreValue.textContent = state.result ? String(state.result.score) : "—";
-
-  const completed = state.result
-    ? state.result.objectives.filter((objective) => objective.passed).length
-    : 0;
-  elements.objectiveProgress.textContent = `${completed} / ${scenario.objectives.length} complete`;
-  elements.objectiveList.replaceChildren(
-    ...scenario.objectives.map((objective) => objectiveCard(objective, state.result)),
-  );
-
-  document.querySelectorAll(".scenario-item").forEach((button) => {
-    const selected = button.dataset.scenarioId === state.selectedId;
-    button.setAttribute("aria-pressed", String(selected));
-  });
-}
-
-async function selectScenario(scenarioId) {
-  clearNotice();
-  state.selectedId = scenarioId;
-  state.result = null;
-  state.selected = await api(`/api/scenarios/${encodeURIComponent(scenarioId)}`);
-  elements.workspacePath.textContent = "Start the lab to create a workspace.";
-  elements.evidencePanel.hidden = true;
-  renderMission();
-}
-
-async function startSelectedScenario() {
-  if (!state.selectedId) return;
-  const approved = window.confirm(
-    "Initialize a fresh lab? This safely resets the existing workspace for this scenario.",
-  );
-  if (!approved) return;
-  clearNotice();
-  setBusy(true);
+async function loadCurriculum() {
+  const container = document.querySelector("#curriculum");
   try {
-    const payload = await api(
-      `/api/scenarios/${encodeURIComponent(state.selectedId)}/start`,
-      { method: "POST", body: "{}" },
-    );
-    state.result = null;
-    elements.workspacePath.textContent = payload.workspace;
-    elements.evidencePanel.hidden = true;
-    showNotice("Lab initialized. Open the workspace, read INCIDENT.md, and contain the breach.", "success");
-    renderMission();
-  } catch (error) {
-    showNotice(error.message, "error");
-  } finally {
-    setBusy(false);
+    const response = await fetch("/api/curriculum");
+    if (!response.ok) throw new Error("Curriculum request failed");
+    const data = await response.json();
+    container.replaceChildren(...data.areas.map(areaCard));
+    curriculumLoaded = true;
+  } catch (_error) {
+    container.textContent = "The curriculum could not be loaded. Restart the local server and try again.";
   }
 }
 
-async function verifySelectedScenario() {
-  if (!state.selectedId) return;
-  clearNotice();
-  setBusy(true);
+async function loadVersion() {
   try {
-    const payload = await api(
-      `/api/scenarios/${encodeURIComponent(state.selectedId)}/verify`,
-      { method: "POST", body: "{}" },
-    );
-    state.result = payload;
-    elements.workspacePath.textContent = payload.workspace_path;
-    elements.markdownReport.textContent = payload.reports.markdown;
-    elements.jsonReport.textContent = payload.reports.json;
-    elements.evidencePanel.hidden = false;
-    showNotice(
-      payload.passed
-        ? "Incident contained. Your evidence report is ready."
-        : `Verification scored ${payload.score}/100. Review the unresolved controls below.`,
-      payload.passed ? "success" : "warning",
-    );
-    renderMission();
-  } catch (error) {
-    showNotice(error.message, "error");
-  } finally {
-    setBusy(false);
+    const response = await fetch("/api/health");
+    const data = await response.json();
+    document.querySelector("#version").textContent = `Local server · v${data.version}`;
+  } catch (_error) {
+    document.querySelector("#version").textContent = "Local server unavailable";
   }
 }
 
-async function boot() {
-  try {
-    const [health, catalog] = await Promise.all([api("/api/health"), api("/api/scenarios")]);
-    elements.runtimeLabel.textContent = `Local runtime ready · v${health.version}`;
-    state.scenarios = catalog.scenarios;
-    renderScenarioList();
-    if (state.scenarios.length) await selectScenario(state.scenarios[0].id);
-  } catch (error) {
-    elements.runtimeLabel.textContent = "Local runtime unavailable";
-    showNotice(error.message, "error");
-  }
-}
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a[data-link]");
+  if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  setRoute(new URL(link.href).pathname);
+});
 
-elements.startButton.addEventListener("click", startSelectedScenario);
-elements.verifyButton.addEventListener("click", verifySelectedScenario);
-boot();
+window.addEventListener("popstate", () => setRoute(window.location.pathname, true));
+setRoute(window.location.pathname, true);
+loadVersion();

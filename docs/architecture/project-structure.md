@@ -1,42 +1,48 @@
-# GitQuest project structure
+# Project structure
+
+GitQuest uses a small layered Python architecture. The terminal and browser are interfaces over the
+same learning concepts; Git operations and filesystem work stay behind adapters and managed runtime
+boundaries.
 
 ```text
 gitquest/
-|-- Makefile             # Local commands mirrored by CI
-|-- pyproject.toml
-|-- src/gitquest/
-|   |-- application/     # Use-case orchestration
-|   |-- domain/          # Pure game rules, models, and current mission catalogue
-|   |-- runtime/         # Disposable workspace lifecycle
-|   |-- adapters/        # Git and future security-tool integrations
-|   |-- persistence/     # Progress and evidence storage
-|   |-- interfaces/      # Terminal and localhost HTTP adapters
-|   |-- web/             # Packaged monochrome browser UI and logo
-|   `-- reporting/       # Evidence and human-readable report exports
-|-- scenarios/           # Versioned mission packs and fixtures
-|-- policies/            # Policy-as-code used by scenarios and CI
-|-- tests/               # Unit, contract, integration, and scenario tests
-|-- docs/                # Architecture, ADRs, threats, development guide, roadmap
-|-- .github/workflows/   # Current CI; later security, scenario, and release automation
-`-- .github/dependabot.yml
+├── .github/                 # CI and dependency updates
+├── data/                    # ignored local player progress
+├── docs/                    # architecture, roadmap, and execution plan
+├── src/gitquest/
+│   ├── adapters/            # Git and system process boundaries
+│   ├── application/         # game orchestration and diagnostics
+│   ├── domain/              # missions, answers, players, and map rules
+│   ├── interfaces/          # terminal UI and localhost HTTP adapter
+│   ├── persistence/         # local progress storage
+│   ├── runtime/             # marked disposable workspaces
+│   └── web/                 # packaged HTML, CSS, JavaScript, and logo
+└── tests/                   # unit and local integration tests
 ```
 
-## Dependency direction
+## Current request flow
 
-The domain must not import terminal UI, filesystem, subprocess, database, or scanner code.
-Application services coordinate work through runtime, adapter, persistence, and interface
-boundaries. External tools are wrapped by adapters so their output can later be normalized
-into evidence without leaking tool-specific details across the codebase.
+```text
+Terminal -> GameEngine -> mission rules -> Git adapter / workspace -> JSON progress
+Browser  -> local HTTP -> curriculum data -> packaged static interface
+```
 
-Both the terminal CLI and browser console call the same application services. The local HTTP
-adapter owns routing and response security, while browser assets contain presentation behavior only;
-neither interface reimplements scenario scoring or workspace rules.
+The browser is intentionally read-only at the reset baseline. It must not grow a second gameplay
+engine. The next architecture step is to extract lesson execution from the terminal `GameEngine`
+into application services that both interfaces can call.
 
-The Makefile is the local automation boundary. GitHub Actions calls the same targets instead of
-duplicating lint, test, or build commands in workflow YAML.
+## Dependency rules
 
-## Transitional modules
+- Domain code does not import terminal, HTTP, filesystem, subprocess, or persistence code.
+- Application services coordinate domain rules and explicit ports.
+- Adapters are the only place that execute Git or inspect system tools.
+- Interfaces translate input and output; they do not decide whether a lesson passed.
+- Runtime code creates only marked, contained, disposable repositories.
+- Persistence is local and replaceable; lesson correctness never depends on analytics.
 
-The existing mission catalogue and JSON save system were placed in their correct long-term
-boundaries but intentionally kept working. Replace them incrementally with validated scenario
-manifests and versioned evidence persistence rather than attempting both migrations at once.
+## Target gameplay boundary
+
+The browser will submit a typed action such as `stage_file` or `create_branch`, not an arbitrary
+shell string. An application service will map that action to an allow-listed Git adapter operation,
+then a validator will inspect repository state. This keeps lessons authentic without turning the
+local HTTP process into a general command-execution server.
