@@ -41,14 +41,6 @@ class CliTests(unittest.TestCase):
         self.assertEqual(main(["doctor"]), 1)
         render_mock.assert_called_once_with(report)
 
-    @patch("gitquest.cli.render_scenario_list")
-    @patch("gitquest.cli.list_scenarios")
-    def test_scenario_list_uses_catalog(self, list_scenarios_mock, render_mock):
-        list_scenarios_mock.return_value = ()
-
-        self.assertEqual(main(["scenario", "list"]), 0)
-        render_mock.assert_called_once_with(())
-
     @patch("gitquest.cli.serve_web")
     def test_web_command_starts_local_interface(self, serve_web_mock):
         serve_web_mock.return_value = 0

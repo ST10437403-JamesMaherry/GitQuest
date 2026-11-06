@@ -3,10 +3,6 @@
 venv/
 env/
 
-#
-*.pdf
-!output/pdf/gitquest-next-level-portfolio-roadmap.pdf
-
 # Python cache files
 __pycache__/
 *.py[cod]
@@ -21,9 +17,6 @@ __pycache__/
 # Environment variables / secrets
 .env
 
-# This is an explicitly fake credential used by the offline training fixture.
-!scenarios/supply_chain/supply-chain-siege/fixture/.env
-
 # Test and coverage output
 .pytest_cache/
 .coverage
@@ -36,9 +29,6 @@ dist/
 
 # GitQuest sandbox folders
 sandboxes/
-
-# Generated scenario evidence reports
-artifacts/
 
 # Local game progress
 # Keep this ignored if you do not want your personal save data pushed to GitHub.

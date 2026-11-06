@@ -2,76 +2,46 @@
 
 ## Environment
 
-Create and activate a virtual environment, then install the development extras:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+make install-dev PYTHON=python
+```
 
-    python3 -m venv .venv
-    source .venv/bin/activate
-    make install-dev PYTHON=python
+The `PYTHON` Make variable ensures every command uses the active environment.
 
-The Makefile intentionally uses an overridable Python command. Passing <code>PYTHON=python</code>
-ensures every command uses the activated environment. Without an override, Make uses
-<code>python3</code>.
+## Quality gate
 
-## Local quality gate
+```bash
+make ci PYTHON=python
+```
 
-Run the same gate used by GitHub Actions:
+This runs Ruff static checks, Ruff formatting checks, all unit and integration tests, and Python
+package builds. CI runs the same command on every pull request.
 
-    make ci PYTHON=python
+## Commit discipline
 
-That command runs:
+- Make one observable change per commit.
+- Use imperative Conventional Commit subjects, such as `feat(lessons): add status prediction`.
+- Keep tests in the same commit as the behavior they protect.
+- Do not mix mechanical renames with behavior changes.
+- Keep the application runnable and the quality gate green after every commit.
+- Update documentation when a command, route, learning objective, or boundary changes.
 
-1. Ruff static checks;
-2. Ruff's formatting check;
-3. the complete unittest suite, including local HTTP and Git integration tests; and
-4. wheel plus source-distribution builds.
+The planned sequence is in [`execution-plan.md`](execution-plan.md). It is a guide, not permission
+to preserve a poor decision just to keep the original numbering.
 
-Use focused targets while developing:
+## Browser constraints
 
-    make test PYTHON=python
-    make lint PYTHON=python
-    make format-check PYTHON=python
-    make build PYTHON=python
+The browser has no build step or remote assets. Keep it responsive at 320px, keyboard navigable,
+understandable without color, compatible with reduced-motion preferences, and compliant with its
+strict Content Security Policy.
 
-The format target is intentionally check-only. Formatting source remains an explicit developer
-choice rather than an unexpected Makefile mutation.
+Browser controls must never pass arbitrary commands or paths to a shell. Add typed, allow-listed
+application operations and repository-state validators instead.
 
-## CI design
+## Definition of done for a lesson
 
-The CI workflow runs on pushes to <code>main</code>, pull requests, and manual dispatches. It uses:
-
-- read-only repository permissions;
-- immutable commit SHAs for GitHub-authored actions;
-- disabled persisted checkout credentials;
-- a Python 3.9 and 3.13 test matrix;
-- pip caching managed by setup-python;
-- a ten-minute job timeout; and
-- the same <code>make ci</code> command used locally.
-
-After the quality gate, CI smoke-tests the installed command, doctor JSON, and scenario catalog.
-
-## Dependency updates
-
-Dependabot runs weekly for:
-
-- Python production dependencies;
-- Python development dependencies; and
-- GitHub Actions.
-
-Updates are grouped by purpose to reduce pull-request noise. Review and merge them like any other
-code change. In particular, verify action SHA changes, changelogs, test results, and supported Python
-versions before merging.
-
-## Browser UI constraints
-
-The incident console has no build step or remote assets. Keep it:
-
-- black, white, and neutral gray;
-- usable at 320px and wide desktop layouts;
-- keyboard navigable with visible focus;
-- understandable without color;
-- compatible with reduced-motion preferences;
-- free of inline scripts and styles so the Content Security Policy stays strict; and
-- dependent only on the existing localhost JSON API.
-
-Run <code>make web PYTHON=python</code> and inspect desktop plus mobile layouts after changing HTML,
-CSS, or JavaScript.
+A lesson is complete only when it includes a learning objective, short explanation, prediction,
+safe setup, authentic action, deterministic validation, helpful retry state, completion summary,
+automated tests, and curriculum documentation.

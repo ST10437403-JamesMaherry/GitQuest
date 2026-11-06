@@ -3,125 +3,96 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#0a0a0a">
-    <title>GitQuest Incident Console</title>
+    <meta name="description" content="Learn Git and GitHub through guided, hands-on practice.">
+    <title>GitQuest — Learn Git by doing</title>
     <link rel="stylesheet" href="/assets/styles.css">
     <script src="/assets/app.js" defer></script>
   </head>
   <body>
-    <a class="skip-link" href="#scenario-console">Skip to scenario console</a>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" data-link aria-label="GitQuest home">
+        <img src="/assets/gitquest-logo.png" alt="" width="52" height="52">
+        <span>GitQuest</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/" data-link>Home</a>
+        <a href="/learn" data-link>Curriculum</a>
+        <a href="/guide" data-link>Run it</a>
+      </nav>
+    </header>
 
-    <div class="shell">
-      <header class="topbar">
-        <a class="brand" href="/" aria-label="GitQuest home">
-          <span class="brand-crop">
-            <img src="/assets/gitquest-logo.png" alt="GitQuest">
-          </span>
-          <span class="brand-context">Incident Console</span>
-        </a>
-        <div class="runtime-status" aria-live="polite">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span id="runtime-label">Connecting to local runtime...</span>
-        </div>
-      </header>
-
-      <main>
-        <section class="hero" aria-labelledby="hero-title">
-          <p class="eyebrow">Local DevSecOps simulator</p>
-          <h1 id="hero-title">Break it.<br>Fix it. Prove it.</h1>
-          <div class="hero-support">
-            <p>
-              Investigate compromised repositories, remediate real controls, and produce
-              evidence that can be inspected instead of merely claimed.
-            </p>
-            <dl class="hero-facts" aria-label="Product principles">
-              <div><dt>Runtime</dt><dd>Local only</dd></div>
-              <div><dt>Cost</dt><dd>Zero required</dd></div>
-              <div><dt>Output</dt><dd>Verifiable evidence</dd></div>
-            </dl>
+    <main id="content" tabindex="-1">
+      <section class="view" data-view="home">
+        <div class="hero">
+          <p class="eyebrow">A local-first learning game</p>
+          <h1>Learn Git by doing.</h1>
+          <p class="lede">
+            Build a mental model of Git, practise real commands in disposable repositories, and
+            connect the command line to everyday GitHub workflows.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href="/learn" data-link>Explore the curriculum</a>
+            <a class="button" href="/guide" data-link>Start the terminal game</a>
           </div>
-        </section>
+        </div>
+        <div class="principles" aria-label="Product principles">
+          <article><span>01</span><h2>Understand</h2><p>See what Git changes and why.</p></article>
+          <article><span>02</span><h2>Practise</h2><p>Work in safe, throwaway repositories.</p></article>
+          <article><span>03</span><h2>Transfer</h2><p>Use the same concepts on GitHub.</p></article>
+        </div>
+      </section>
 
-        <section id="scenario-console" class="console-grid" aria-label="Scenario console">
-          <aside class="scenario-rail" aria-labelledby="scenario-heading">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow">Campaign index</p>
-                <h2 id="scenario-heading">Scenarios</h2>
-              </div>
-              <span id="scenario-count" class="count" aria-label="Scenario count">0</span>
-            </div>
-            <div id="scenario-list" class="scenario-list" aria-live="polite"></div>
-          </aside>
+      <section class="view" data-view="learn" hidden>
+        <div class="page-heading">
+          <p class="eyebrow">The learning path</p>
+          <h1>From first commit to collaboration.</h1>
+          <p>Playable lessons are shown honestly. Planned areas are the work ahead.</p>
+        </div>
+        <div id="curriculum" class="curriculum" aria-live="polite">
+          <p>Loading curriculum…</p>
+        </div>
+      </section>
 
-          <section class="mission-panel" aria-labelledby="mission-title">
-            <div id="empty-state" class="empty-state">
-              <p class="eyebrow">Waiting for intel</p>
-              <h2>Select a scenario to inspect its incident briefing.</h2>
-            </div>
+      <section class="view" data-view="guide" hidden>
+        <div class="page-heading">
+          <p class="eyebrow">Run GitQuest</p>
+          <h1>One environment. Two entry points.</h1>
+        </div>
+        <div class="guide-grid">
+          <article>
+            <p class="step">Terminal campaign</p>
+            <h2>Play what works today</h2>
+            <pre><code>source .venv/bin/activate
+make run PYTHON=python</code></pre>
+            <p>Answer guided questions and complete real Git tasks in generated sandboxes.</p>
+          </article>
+          <article>
+            <p class="step">Browser curriculum</p>
+            <h2>See the complete direction</h2>
+            <pre><code>source .venv/bin/activate
+make web PYTHON=python</code></pre>
+            <p>The browser is read-only for now. Interactive browser labs are next on the plan.</p>
+          </article>
+        </div>
+        <aside class="note">
+          <strong>Safety rule:</strong> practise destructive Git commands only inside a
+          GitQuest-generated sandbox, never in a repository you care about.
+        </aside>
+      </section>
 
-            <div id="mission-content" class="mission-content" hidden>
-              <div class="mission-header">
-                <div>
-                  <div class="tag-row" aria-label="Scenario metadata">
-                    <span id="mission-profile" class="tag"></span>
-                    <span id="mission-difficulty" class="tag tag-muted"></span>
-                  </div>
-                  <p id="mission-category" class="eyebrow"></p>
-                  <h2 id="mission-title"></h2>
-                  <p id="mission-summary" class="mission-summary"></p>
-                </div>
-                <div class="score-card" aria-label="Current verification score">
-                  <span>Score</span>
-                  <strong id="score-value">-</strong>
-                  <small>/ 100</small>
-                </div>
-              </div>
+      <section class="view" data-view="not-found" hidden>
+        <div class="page-heading">
+          <p class="eyebrow">404</p>
+          <h1>That path is not on the map.</h1>
+          <a class="button button-primary" href="/" data-link>Return home</a>
+        </div>
+      </section>
+    </main>
 
-              <div class="action-row">
-                <button id="start-button" class="button button-primary" type="button">
-                  Initialize lab
-                </button>
-                <button id="verify-button" class="button button-secondary" type="button">
-                  Verify remediation
-                </button>
-              </div>
-
-              <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
-
-              <div class="workspace-card">
-                <span>Workspace</span>
-                <code id="workspace-path">Start the lab to create a workspace.</code>
-              </div>
-
-              <div class="objectives-heading">
-                <div>
-                  <p class="eyebrow">Response plan</p>
-                  <h3>Objectives</h3>
-                </div>
-                <span id="objective-progress">0 / 0 complete</span>
-              </div>
-              <div id="objective-list" class="objective-list"></div>
-
-              <div id="evidence-panel" class="evidence-panel" hidden>
-                <p class="eyebrow">Audit output</p>
-                <h3>Evidence generated</h3>
-                <p>Use the readable report in your portfolio or feed the JSON result into automation.</p>
-                <dl>
-                  <div><dt>Markdown</dt><dd id="markdown-report"></dd></div>
-                  <div><dt>JSON</dt><dd id="json-report"></dd></div>
-                </dl>
-              </div>
-            </div>
-          </section>
-        </section>
-      </main>
-
-      <footer>
-        <span>Runs on your machine.</span>
-        <span>No telemetry. No cloud bill. No real credentials.</span>
-      </footer>
-    </div>
+    <footer>
+      <p>GitQuest is free, local-first, and built to make Git understandable.</p>
+      <p id="version">Checking local server…</p>
+    </footer>
   </body>
 </html>

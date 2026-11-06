@@ -87,6 +87,29 @@ def print_story(message):
     console.print(Panel(message, title="Story", border_style="magenta", padding=(1, 2)))
 
 
+def print_game_instructions():
+    """Explain the legacy campaign loop after the player profile is ready."""
+    instructions = Text()
+    steps = (
+        ("Open the mission map", "Choose an unlocked learning area from the main menu."),
+        ("Select a mission", "Read its story, objective, and available hints before answering."),
+        (
+            "Complete the challenge",
+            "Solve the quiz or use real Git commands inside the disposable sandbox provided.",
+        ),
+        ("Learn and progress", "Completed missions award XP and unlock new areas."),
+        ("Return any time", "Your progress is saved locally when you leave the game."),
+    )
+    for index, (title, description) in enumerate(steps, start=1):
+        instructions.append(f"{index}. {title}\n", style="bold")
+        instructions.append(f"   {description}\n")
+    instructions.append(
+        "\nSafety: Practice only in GitQuest-generated sandboxes, never in an important repository.",
+        style="bold yellow",
+    )
+    console.print(Panel(instructions, title="How to Play", border_style="cyan", padding=(1, 2)))
+
+
 def create_menu_table(title):
     """
     Creates a reusable Rich table for menus.

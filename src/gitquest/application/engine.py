@@ -18,6 +18,7 @@ from gitquest.interfaces.terminal_ui import (
     print_warning,
     print_info,
     print_story,
+    print_game_instructions,
     create_menu_table,
 )
 from gitquest.persistence.json_save import load_player, reset_progress, save_player
@@ -46,6 +47,7 @@ class GameEngine:
         """
         self.show_intro()
         self.load_or_create_player()
+        print_game_instructions()
         self.main_menu()
 
     def show_intro(self):

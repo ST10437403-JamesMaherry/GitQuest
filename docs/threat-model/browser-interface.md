@@ -1,32 +1,34 @@
 # Browser interface threat model
 
-## Scope
+## Boundary
 
-The local browser console serves static assets and a small JSON API on `127.0.0.1`. It can create or
-reset GitQuest-managed scenario workspaces and verify their contents.
+GitQuest serves a packaged interface on `127.0.0.1`. It is a local single-player application, not a
+production internet service. The current browser is read-only; future labs will mutate only marked
+GitQuest workspaces through typed application operations.
 
-## Primary threats
+## Assets to protect
 
-- A malicious website attempts a cross-site request against the local server.
-- DNS rebinding supplies an unexpected Host header.
-- Scenario text is used for script or markup injection.
-- Oversized or malformed requests consume local resources.
-- A route is tricked into reading or writing an arbitrary local path.
-- The interface accidentally sends user activity to a third party.
+- Repositories outside the GitQuest sandbox root
+- User files and process environment
+- Local Git configuration and credentials
+- Lesson progress integrity
+- Browser trust in local responses
 
-## Controls
+## Primary threats and controls
 
-- Mutation uses POST plus the non-simple `X-GitQuest-Request` header, with no cross-origin resource
-  sharing headers.
-- The request adapter accepts only `127.0.0.1` and `localhost` Host values.
-- A Content Security Policy limits scripts, styles, images, and connections to the same origin.
-- Dynamic text is assigned with `textContent`; fetched content is never passed to `innerHTML`.
-- Request bodies are capped at one KiB and ignored because current mutation routes need no input.
-- Routes accept validated scenario IDs only. Workspace and report paths are derived internally.
-- Static assets are bundled locally. The application includes no analytics or remote resources.
+| Threat | Control |
+| --- | --- |
+| Remote access to the local server | Bind to loopback and reject non-local Host headers |
+| Browser injection | No inline code, strict CSP, DOM text APIs for lesson data |
+| Framing and data leakage | Deny framing, referrers, remote assets, and unnecessary permissions |
+| Arbitrary command execution | Expose typed allow-listed Git actions, never raw shell input |
+| Path traversal | Resolve paths beneath a marked workspace and reject symlink escapes |
+| Damage to personal repositories | Create disposable marked repositories under one managed root |
+| Cross-origin mutation | Require non-simple JSON requests and a request-verification token |
+| Oversized input | Bound request bodies and validate every field |
 
-## Residual risks
+## Required review before interactive labs
 
-- Any process running as the same local user can call the API directly.
-- This development server is intentionally single-user and must not be exposed to a network.
-- Browser extensions retain the access granted by the user's browser profile.
+Before adding browser mutation routes, document the exact action schema, allowed Git operations,
+path containment checks, request-verification mechanism, failure cleanup, and integration tests for
+host-header rejection, path traversal, symlink escape, malformed input, and workspace markers.

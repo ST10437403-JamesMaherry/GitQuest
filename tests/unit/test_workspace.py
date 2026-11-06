@@ -92,11 +92,11 @@ class WorkspaceTests(unittest.TestCase):
     def test_existing_managed_workspace_can_be_opened_without_reset(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory) / "sandboxes"
-            workspace = create_managed_workspace("scenario_supply-chain-siege", root=root)
+            workspace = create_managed_workspace("lesson_branching-basics", root=root)
             evidence = workspace / "evidence.txt"
             evidence.write_text("preserve me")
 
-            opened = get_managed_workspace("scenario_supply-chain-siege", root=root)
+            opened = get_managed_workspace("lesson_branching-basics", root=root)
 
             self.assertEqual(opened, workspace)
             self.assertEqual(evidence.read_text(), "preserve me")
@@ -116,7 +116,7 @@ class WorkspaceTests(unittest.TestCase):
             try:
                 os.chdir(temporary_path)
                 with self.assertRaises(WorkspaceSafetyError):
-                    create_managed_workspace("scenario_safe", root=Path("linked") / "root")
+                    create_managed_workspace("lesson_safe", root=Path("linked") / "root")
             finally:
                 os.chdir(previous_directory)
 

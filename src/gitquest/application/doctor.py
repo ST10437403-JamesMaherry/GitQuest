@@ -1,4 +1,4 @@
-"""Capability diagnostics for GitQuest runtime profiles."""
+"""Capability diagnostics for the local GitQuest game."""
 
 from __future__ import annotations
 
@@ -46,24 +46,12 @@ class DoctorReport:
     def to_dict(self) -> dict:
         return {
             "lite_ready": self.lite_ready,
-            "profiles": {
-                profile: self.profile_ready(profile) for profile in ("Lite", "Standard", "Full")
-            },
+            "profiles": {"Local": self.profile_ready("Local")},
             "checks": [check.to_dict() for check in self.checks],
         }
 
 
-TOOL_SPECS = (
-    ("git", "Git", ("Lite", "Standard", "Full"), ("--version",)),
-    ("podman", "Podman", ("Standard", "Full"), ("--version",)),
-    ("gitleaks", "Gitleaks", ("Standard", "Full"), ("version",)),
-    ("trivy", "Trivy", ("Standard", "Full"), ("--version",)),
-    ("tofu", "OpenTofu", ("Full",), ("version",)),
-    ("conftest", "Conftest", ("Full",), ("--version",)),
-    ("kind", "kind", ("Full",), ("--version",)),
-    ("kubectl", "kubectl", ("Full",), ("version", "--client")),
-    ("cosign", "Cosign", ("Full",), ("version",)),
-)
+TOOL_SPECS = (("git", "Git", ("Lite", "Local"), ("--version",)),)
 
 
 def _tool_checks() -> Iterable[DiagnosticCheck]:
@@ -92,7 +80,7 @@ def run_doctor(workspace_root: Path = SANDBOX_ROOT) -> DoctorReport:
         key="python",
         label="Python",
         available=python_available,
-        profiles=("Lite", "Standard", "Full"),
+        profiles=("Lite", "Local"),
         detail=f"Python {platform.python_version()} ({sys.executable})",
     )
 
@@ -101,7 +89,7 @@ def run_doctor(workspace_root: Path = SANDBOX_ROOT) -> DoctorReport:
         key="workspace",
         label="Managed workspace",
         available=workspace_available,
-        profiles=("Lite", "Standard", "Full"),
+        profiles=("Lite", "Local"),
         detail=workspace_detail,
     )
 

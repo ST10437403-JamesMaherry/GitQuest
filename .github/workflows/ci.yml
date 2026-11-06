@@ -45,4 +45,3 @@ jobs:
         run: |
           gitquest --version
           gitquest doctor --json
-          gitquest scenario list
