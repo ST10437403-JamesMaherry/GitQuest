@@ -13,9 +13,11 @@ is proven.
 
 ## Decision
 
-GitQuest provides a localhost-only browser interface through `gitquest web`. Python serves packaged
-HTML, CSS, and JavaScript without a Node.js build or remote CDN. Both interfaces will eventually use
-shared application lesson services and validators.
+GitQuest uses the localhost browser interface as its default entry point through `gitquest`,
+`python -m gitquest`, or `make start`. Python serves packaged HTML, CSS, and JavaScript without a
+Node.js build or remote CDN. The terminal campaign remains available explicitly through
+`gitquest play`. Both interfaces will eventually use shared application lesson services and
+validators.
 
 At the reset baseline the browser is read-only. Interactive routes may be added only after the game
 engine is separated from terminal input and repository mutations are expressed as typed,

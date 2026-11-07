@@ -2,7 +2,7 @@ PYTHON ?= python3
 PORT ?= 8000
 .DEFAULT_GOAL := help
 
-.PHONY: help install install-dev run web doctor test lint format-check build ci
+.PHONY: help install install-dev start run web doctor test lint format-check build ci
 
 help: ## Show the available development commands.
 	@awk 'BEGIN {FS = ":.*## "; printf "GitQuest commands:\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -13,11 +13,13 @@ install: ## Install GitQuest into the active Python environment.
 install-dev: ## Install GitQuest and its free development tools.
 	$(PYTHON) -m pip install -e ".[dev]"
 
+start: ## Start the browser-based GitQuest experience (override with PORT=8765).
+	$(PYTHON) -m gitquest web --port $(PORT)
+
 run: ## Start the terminal campaign.
 	$(PYTHON) -m gitquest play
 
-web: ## Start the local browser curriculum (override with PORT=8765).
-	$(PYTHON) -m gitquest web --port $(PORT)
+web: start ## Alias for the browser-based start command.
 
 doctor: ## Check which GitQuest runtime profiles are available.
 	$(PYTHON) -m gitquest doctor

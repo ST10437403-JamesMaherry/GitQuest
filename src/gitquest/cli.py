@@ -59,9 +59,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             render_doctor_report(report)
         return 0 if report.lite_ready else 1
 
-    if args.command == "web":
+    if args.command in {None, "web"}:
+        port = getattr(args, "port", 8000)
+        open_browser = not getattr(args, "no_open", False)
         try:
-            return serve_web(port=args.port, open_browser=not args.no_open)
+            return serve_web(port=port, open_browser=open_browser)
         except (OSError, ValueError) as error:
             print(f"GitQuest web error: {error}", file=sys.stderr)
             return 2
