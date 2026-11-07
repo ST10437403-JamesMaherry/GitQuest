@@ -101,33 +101,35 @@ cd C:\path\to\GitQuest
 
 ## Run GitQuest
 
-Start the playable terminal campaign:
+Start the browser-based experience with one command:
 
 ```bash
-make run PYTHON=python
+make start
 ```
 
-Equivalent commands:
+GitQuest opens [http://127.0.0.1:8000](http://127.0.0.1:8000). Stop the local server with
+`Ctrl+C`. The installed command and Python module use the browser by default:
 
 ```bash
-python -m gitquest play
-gitquest play
+gitquest
+python -m gitquest
 ```
 
-Start the local browser curriculum:
+Use another port when 8000 is occupied:
 
 ```bash
-make web PYTHON=python
-```
-
-Then open [http://127.0.0.1:8000](http://127.0.0.1:8000). Use another port when needed:
-
-```bash
-make web PYTHON=python PORT=8765
+make start PORT=8765
 python -m gitquest web --port 8765 --no-open
 ```
 
-Stop the server with `Ctrl+C`.
+The original terminal campaign remains available while its gameplay services are moved behind the
+browser interface:
+
+```bash
+make run PYTHON=python
+gitquest play
+python -m gitquest play
+```
 
 ## Development workflow
 
@@ -143,8 +145,9 @@ Focused commands:
 | --- | --- |
 | `make install` | Install the player application |
 | `make install-dev` | Install the app and free development tools |
+| `make start` | Start the browser-based GitQuest experience |
 | `make run` | Start the terminal campaign |
-| `make web` | Start the browser curriculum |
+| `make web` | Alias for `make start` |
 | `make doctor` | Check Python, Git, and workspace readiness |
 | `make test` | Run the test suite |
 | `make lint` | Run Ruff static checks |

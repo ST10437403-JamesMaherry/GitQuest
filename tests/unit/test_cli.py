@@ -9,10 +9,12 @@ from gitquest.cli import main
 
 
 class CliTests(unittest.TestCase):
-    @patch("gitquest.cli.GameEngine")
-    def test_no_command_starts_game_for_backwards_compatibility(self, engine_class):
+    @patch("gitquest.cli.serve_web")
+    def test_no_command_starts_browser_interface(self, serve_web_mock):
+        serve_web_mock.return_value = 0
+
         self.assertEqual(main([]), 0)
-        engine_class.return_value.start.assert_called_once_with()
+        serve_web_mock.assert_called_once_with(port=8000, open_browser=True)
 
     @patch("gitquest.cli.GameEngine")
     def test_play_command_starts_game(self, engine_class):
